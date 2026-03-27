@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI学习网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .hero {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        .hero h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #764ba2;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-card li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            opacity: 0.8;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI学习网站</h1>
+            <p>从入门到精通，全面学习人工智能</p>
+        </header>
+        
+        <div class="hero">
+            <h2>欢迎来到AI学习之旅</h2>
+            <p>这里整理了机器学习、深度学习、自然语言处理等AI相关知识。无论你是初学者还是有经验的开发者，都能在这里找到有价值的内容。</p>
+            <a href="#" class="cta-button">开始学习 →</a>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>📚 基础知识</h3>
+                <ul>
+                    <li>Python编程入门</li>
+                    <li>数学基础（线性代数、概率论）</li>
+                    <li>机器学习概念</li>
+                    <li>常用算法讲解</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🧠 深度学习</h3>
+                <ul>
+                    <li>神经网络基础</li>
+                    <li>PyTorch/TensorFlow</li>
+                    <li>计算机视觉</li>
+                    <li>Transformer模型</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>💬 NLP自然语言处理</h3>
+                <ul>
+                    <li>文本预处理</li>
+                    <li>词向量表示</li>
+                    <li>大语言模型</li>
+                    <li>对话系统实战</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🛠️ 实战项目</h3>
+                <ul>
+                    <li>图像分类项目</li>
+                    <li>情感分析系统</li>
+                    <li>聊天机器人</li>
+                    <li>AI Agent开发</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📖 学习资源</h3>
+                <ul>
+                    <li>优质教程推荐</li>
+                    <li>经典论文解读</li>
+                    <li>开源项目分享</li>
+                    <li>面试题库</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>👥 社区交流</h3>
+                <ul>
+                    <li>学习笔记分享</li>
+                    <li>问题讨论区</li>
+                    <li>项目协作</li>
+                    <li>经验交流</li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p>🤖 AI学习网站 - 让AI学习更简单</p>
+            <p>© 2026 AI Learning Site. Built with ❤️</p>
+        </footer>
+    </div>
+</body>
+</html>
