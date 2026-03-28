@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第六章：项目实战 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chapter-header { background: linear-gradient(135deg, #00897b, #26a69a); color: white; padding: 3rem 2rem; text-align: center; }
+        .chapter-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .chapter-header .chapter-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; opacity: 0.9; }
+        .chapter-content { padding: 4rem 0; }
+        .chapter-content .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .chapter-section { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .chapter-section h2 { color: #00897b; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+        .chapter-section h3 { color: #444; font-size: 1.1rem; margin: 1.5rem 0 0.8rem; }
+        .chapter-section p { color: #555; line-height: 1.8; margin-bottom: 1rem; }
+        .code-block { background: #1e1e2e; color: #cdd6f4; padding: 1.2rem 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.88rem; overflow-x: auto; margin: 1rem 0; line-height: 1.7; white-space: pre; }
+        .highlight { background: #fff8e1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin: 1.5rem 0; }
+        .highlight strong { color: #e65100; }
+        .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .tip-box strong { color: #2e7d32; }
+        .project-card { background: white; border: 2px solid #e0e0e0; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; transition: all 0.3s; }
+        .project-card:hover { border-color: #00897b; box-shadow: 0 8px 30px rgba(0,137,123,0.1); }
+        .project-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .project-icon { font-size: 2.5rem; }
+        .project-title { font-size: 1.3rem; font-weight: 700; color: #333; }
+        .project-difficulty { display: inline-block; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white; margin-left: auto; }
+        .project-difficulty.easy { background: #4caf50; }
+        .project-difficulty.medium { background: #ff9800; }
+        .project-difficulty.hard { background: #f44336; }
+        .model-compare { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .model-compare th { background: #00897b; color: white; padding: 0.8rem; text-align: left; }
+        .model-compare td { padding: 0.7rem; border-bottom: 1px solid #eee; }
+        .model-compare tr:hover { background: #f5fff9; }
+        .nav-bottom { display: flex; justify-content: space-between; padding: 2rem 0; gap: 1rem; }
+        .nav-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn.prev { background: #f0f0f0; color: #444; }
+        .nav-btn.next { background: #00897b; color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="chapter-header">
+        <h1>🚀 第六章：项目实战</h1>
+        <p>综合运用所学知识，完成 3 个真实 AI Agent 项目</p>
+        <div class="chapter-meta">
+            <span>⏱ 预计学习时间：2周</span>
+            <span>📊 难度：高级</span>
+        </div>
+    </div>
+
+    <section class="chapter-content">
+        <div class="container">
+
+            <!-- 项目流程 -->
+            <div class="chapter-section">
+                <h2>📋 AI Agent 项目开发流程</h2>
+                <p>一个完整的 Agent 项目通常遵循以下开发流程：</p>
+
+                <div class="highlight">
+                    <strong>需求分析 → 技术选型 → 原型开发 → 迭代优化 → 部署上线 → 持续维护</strong>
+                </div>
+
+                <h3>每个阶段的关键任务</h3>
+                <table class="model-compare">
+                    <tr><th>阶段</th><th>关键任务</th><th>产出物</th></tr>
+                    <tr><td>需求分析</td><td>明确用户需求、核心功能、边界</td><td>需求文档</td></tr>
+                    <tr><td>技术选型</td><td>选择模型、框架、工具链</td><td>技术方案</td></tr>
+                    <tr><td>原型开发</td><td>快速搭建最小可用版本</td><td>MVP（最简可行产品）</td></tr>
+                    <tr><td>迭代优化</td><td>测试、调试、调优 Prompt</td><td>可用版本</td></tr>
+                    <tr><td>部署上线</td><td>API 封装、Web 界面、云部署</td><td>线上产品</td></tr>
+                    <tr><td>持续维护</td><td>监控、日志、更新优化</td><td>稳定服务</td></tr>
+                </table>
+            </div>
+
+            <!-- 项目1 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <span class="project-icon">🔍</span>
+                    <span class="project-title">项目一：AI 搜索助手</span>
+                    <span class="project-difficulty easy">入门</span>
+                </div>
+
+                <h3>📌 项目概述</h3>
+                <p>构建一个可以联网搜索信息的 AI Agent，用户提问，Agent 自动搜索、总结并回答。</p>
+
+                <h3>🎯 核心功能</h3>
+                <table class="model-compare">
+                    <tr><td>1. 联网搜索</td><td>自动调用搜索 API 获取最新信息</td></tr>
+                    <tr><td>2. 智能总结</td><td>将搜索结果整理成清晰答案</td></tr>
+                    <tr><td>3. 多源对比</td><td>同时搜索多个来源，交叉验证</td></tr>
+                    <tr><td>4. 追问扩展</td><td>用户可追问，Agent 深入搜索</td></tr>
+                </table>
+
+                <h3>💻 核心代码</h3>
+                <div class="code-block">import os
+from langchain_openai import ChatOpenAI
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain.agents import initialize_agent, Tool
+
+# 1. 初始化模型和搜索工具
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+search = DuckDuckGoSearchRun()
+
+tools = [
+    Tool(name="search", func=search.run, description="搜索互联网获取最新信息")
+]
+
+# 2. 创建 Agent
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent="zero-shot-react-description",
+    verbose=True
+)
+
+# 3. 运行！
+print("=== AI 搜索助手 ===")
+while True:
+    query = input("\n你问（输入 q 退出）：")
+    if query == 'q':
+        break
+    result = agent.run(query)
+    print(f"\n答案：{result}")</div>
+
+                <h3>🔧 扩展功能建议</h3>
+                <div class="tip-box">
+                    <strong>💡 扩展方向：</strong>
+                    <ul style="margin:0.5rem 0 0 1.5rem;">
+                        <li>添加"保存搜索历史"功能</li>
+                        <li>支持搜索结果导出为 Markdown</li>
+                        <li>添加"学术搜索"专门模式</li>
+                        <li>加语音输入（语音转文字）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 项目2 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <span class="project-icon">💻</span>
+                    <span class="project-title">项目二：AI 代码助手</span>
+                    <span class="project-difficulty medium">进阶</span>
+                </div>
+
+                <h3>📌 项目概述</h3>
+                <p>构建一个可以帮用户写代码、调试代码、解释代码的 AI 助手，支持 Python 代码执行。</p>
+
+                <h3>🎯 核心功能</h3>
+                <table class="model-compare">
+                    <tr><td>1. 代码生成</td><td>根据自然语言描述生成代码</td></tr>
+                    <tr><td>2. 代码执行</td><td>自动运行代码并返回结果</td></tr>
+                    <tr><td>3. 错误调试</td><td>分析报错信息，给出修复建议</td></tr>
+                    <tr><td>4. 代码解释</td><td>逐行解释代码逻辑</td></tr>
+                    <tr><td>5. 代码优化</td><td>提供性能/可读性优化建议</td></tr>
+                </table>
+
+                <h3>💻 核心代码</h3>
+                <div class="code-block">import subprocess
+from langchain_openai import ChatOpenAI
+from langchain.agents import tool
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+
+@tool
+def execute_python(code: str) -> str:
+    """执行 Python 代码并返回输出"""
+    try:
+        result = subprocess.run(
+            ["python", "-c", code],
+            capture_output=True, text=True, timeout=10
+        )
+        return result.stdout if result.returncode == 0 else f"错误：{result.stderr}"
+    except Exception as e:
+        return f"执行异常：{e}"
+
+@tool
+def explain_code(code: str) -> str:
+    """解释 Python 代码的功能"""
+    prompt = f"请详细解释以下 Python 代码的功能和逻辑：\n\n{code}"
+    return llm.invoke(prompt)
+
+tools = [execute_python, explain_code]
+
+# 构建 Agent（手动 ReAct）
+from langchain.agents import initialize_agent
+agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)
+
+# 测试
+result = agent.run("写一个冒泡排序，然后解释它，再执行看看结果")
+print(result)</div>
+
+                <div class="highlight">
+                    <strong>⚠️ 安全注意：</strong>自动执行代码有安全风险！生产环境务必做好沙箱隔离，不要执行用户上传的恶意代码。
+                </div>
+            </div>
+
+            <!-- 项目3 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <span class="project-icon">📊</span>
+                    <span class="project-title">项目三：数据分析 Agent</span>
+                    <span class="project-difficulty hard">高级</span>
+                </div>
+
+                <h3>📌 项目概述</h3>
+                <p>构建一个可以自动分析数据文件（CSV/Excel）、生成图表、撰写分析报告的智能助手。</p>
+
+                <h3>🎯 核心功能</h3>
+                <table class="model-compare">
+                    <tr><td>1. 数据读取</td><td>自动解析 CSV、Excel、JSON 文件</td></tr>
+                    <tr><td>2. 数据清洗</td><td>处理缺失值、异常值、重复数据</td></tr>
+                    <tr><td>3. 统计分析</td><td>计算均值、方差、相关性等</td></tr>
+                    <tr><td>4. 可视化</td><td>自动生成柱状图、折线图、饼图</td></tr>
+                    <tr><td>5. 报告生成</td><td>撰写专业数据分析报告</td></tr>
+                </table>
+
+                <h3>💻 核心代码</h3>
+                <div class="code-block">import pandas as pd
+import matplotlib.pyplot as plt
+from langchain_openai import ChatOpenAI
+from langchain.agents import tool, initialize_agent
+
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+
+@tool
+def load_data(file_path: str) -> str:
+    """加载 CSV 或 Excel 文件"""
+    if file_path.endswith('.csv'):
+        df = pd.read_csv(file_path)
+    elif file_path.endswith(('.xls', '.xlsx')):
+        df = pd.read_excel(file_path)
+    else:
+        return "不支持的文件格式"
+    return f"数据加载成功！共{len(df)}行，{len(df.columns)}列\n列名：{list(df.columns)}"
+
+@tool
+def analyze_data(file_path: str, analysis_type: str) -> str:
+    """数据分析"""
+    df = pd.read_csv(file_path)
+    num_cols = df.select_dtypes(include='number').columns
+    
+    if analysis_type == "统计":
+        return str(df[num_cols].describe())
+    elif analysis_type == "缺失":
+        return str(df.isnull().sum())
+    elif analysis_type == "相关性":
+        return str(df[num_cols].corr())
+    return "未知的分析类型"
+
+@tool
+def visualize(file_path: str, chart_type: str, x_col: str, y_col: str):
+    """生成可视化图表"""
+    df = pd.read_csv(file_path)
+    plt.figure(figsize=(10, 6))
+    
+    if chart_type == "柱状图":
+        df.plot(kind='bar', x=x_col, y=y_col)
+    elif chart_type == "折线图":
+        df.plot(kind='line', x=x_col, y=y_col)
+    elif chart_type == "散点图":
+        df.plot(kind='scatter', x=x_col, y=y_col)
+    
+    plt.savefig('chart.png')
+    plt.close()
+    return "图表已保存为 chart.png"
+
+tools = [load_data, analyze_data, visualize]
+agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)
+
+result = agent.run("分析 data/sales.csv 文件，查看基本统计信息并生成柱状图")
+print(result)</div>
+            </div>
+
+            <!-- 部署上线 -->
+            <div class="chapter-section">
+                <h2>🌐 项目部署上线</h2>
+                <p>完成开发后，需要将项目部署到服务器，让别人也能使用。</p>
+
+                <h3>部署方式对比</h3>
+                <table class="model-compare">
+                    <tr><th>方式</th><th>优点</th><th>缺点</th><th>适合场景</th></tr>
+                    <tr><td>本地运行</td><td>简单、无成本</td><td>别人无法访问</td><td>个人学习</td></tr>
+                    <tr><td>Streamlit Cloud</td><td>免费、一键部署</td><td>有限额度</td><td>免费托管 Web 应用</td></tr>
+                    <tr><td>Vercel</td><td>免费、CDN加速</td><td>冷启动慢</td><td>前端为主的应用</td></tr>
+                    <tr><td>阿里云/腾讯云</td><td>稳定、可扩展</td><td>需要付费</td><td>正式产品</td></tr>
+                    <tr><td>Dify + 云服务器</td><td>零代码、托管简单</td><td>需服务器</td><td>AI 应用</td></tr>
+                </table>
+
+                <h3>Streamlit Cloud 免费部署</h3>
+                <div class="code-block"># 1. 创建 requirements.txt
+# requirements.txt
+langchain-openai
+langchain-community
+streamlit
+pandas
+matplotlib
+
+# 2. 创建 app.py（Streamlit 应用入口）
+import streamlit as st
+# ... 你的应用代码
+
+# 3. 推送到 GitHub
+git add .
+git commit -m "Add Streamlit app"
+git push
+
+# 4. 访问 https://streamlit.io/cloud
+#    连接 GitHub 仓库，点击 Deploy！</div>
+
+                <div class="tip-box">
+                    <strong>💡 快速体验：</strong>如果只是想快速分享，最简单的方法是把代码推到 GitHub，然后用 Streamlit Cloud 免费托管，5分钟就能上线！
+                </div>
+            </div>
+
+            <!-- 总结 -->
+            <div class="chapter-section">
+                <h2>🎓 总结与下一步</h2>
+
+                <h3>🎉 你已经掌握了</h3>
+                <table class="model-compare">
+                    <tr><th>技能</th><th>掌握程度</th></tr>
+                    <tr><td>Python 编程</td><td>✅ 入门到进阶</td></tr>
+                    <tr><td>AI/LLM 基本概念</td><td>✅ 理解核心原理</td></tr>
+                    <tr><td>API 调用</td><td>✅ 会用 OpenAI/Claude API</td></tr>
+                    <tr><td>Agent 核心机制</td><td>✅ ReAct / 工具调用 / 记忆</td></tr>
+                    <tr><td>主流框架</td><td>✅ LangChain / AutoGen / CrewAI</td></tr>
+                    <tr><td>项目实战</td><td>✅ 能独立完成完整项目</td></tr>
+                </table>
+
+                <h3>🚀 继续进阶的方向</h3>
+                <div class="highlight">
+                    <strong>🔮 进阶学习路径推荐：</strong><br><br>
+                    <strong>1. 深入大模型研究：</strong>阅读 Transformer 论文、Attention 论文，理解底层原理<br><br>
+                    <strong>2. AI Safety / Alignment：</strong>学习如何让 AI 更安全、更可控<br><br>
+                    <strong>3. 多模态 Agent：</strong>结合图像、音频、视频的跨模态 Agent<br><br>
+                    <strong>4. 本地部署大模型：</strong>用 Ollama / vLLM 在本地运行开源模型（如 Llama、Qwen）<br><br>
+                    <strong>5. 参与开源项目：</strong>为 LangChain、AutoGen 等项目贡献代码<br><br>
+                    <strong>6. 构建自己的产品：</strong>用所学知识解决真实问题，创造商业价值
+                </div>
+            </div>
+
+            <!-- 导航 -->
+            <div class="nav-bottom">
+                <a href="chapter5.html" class="nav-btn prev">← 上一章：Agent框架实战</a>
+                <a href="roadmap.html" class="nav-btn next" style="background:#00897b;">返回学习路线 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
