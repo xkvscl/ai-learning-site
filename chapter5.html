@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五章：Agent框架实战 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chapter-header { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; padding: 3rem 2rem; text-align: center; }
+        .chapter-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .chapter-header .chapter-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; opacity: 0.9; }
+        .chapter-content { padding: 4rem 0; }
+        .chapter-content .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .chapter-section { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .chapter-section h2 { color: #e65100; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+        .chapter-section h3 { color: #444; font-size: 1.1rem; margin: 1.5rem 0 0.8rem; }
+        .chapter-section p { color: #555; line-height: 1.8; margin-bottom: 1rem; }
+        .code-block { background: #1e1e2e; color: #cdd6f4; padding: 1.2rem 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.88rem; overflow-x: auto; margin: 1rem 0; line-height: 1.7; white-space: pre; }
+        .highlight { background: #fff8e1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin: 1.5rem 0; }
+        .highlight strong { color: #e65100; }
+        .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .tip-box strong { color: #2e7d32; }
+        .framework-card { background: white; border: 2px solid #f0f0f0; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; }
+        .framework-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .framework-logo { font-size: 2.5rem; }
+        .framework-name { font-size: 1.5rem; font-weight: 700; color: #333; }
+        .framework-company { color: #888; font-size: 0.9rem; }
+        .model-compare { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .model-compare th { background: #e65100; color: white; padding: 0.8rem; text-align: left; }
+        .model-compare td { padding: 0.7rem; border-bottom: 1px solid #eee; }
+        .model-compare tr:hover { background: #fff8f5; }
+        .nav-bottom { display: flex; justify-content: space-between; padding: 2rem 0; gap: 1rem; }
+        .nav-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn.prev { background: #f0f0f0; color: #444; }
+        .nav-btn.next { background: #e65100; color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="chapter-header">
+        <h1>🛠️ 第五章：Agent 框架实战</h1>
+        <p>使用 LangChain、AutoGen、CrewAI 等主流框架，快速构建 AI Agent 应用</p>
+        <div class="chapter-meta">
+            <span>⏱ 预计学习时间：3周</span>
+            <span>📊 难度：高级</span>
+        </div>
+    </div>
+
+    <section class="chapter-content">
+        <div class="container">
+
+            <!-- LangChain -->
+            <div class="chapter-section">
+                <h2>⛓️ 5.1 LangChain 入门</h2>
+                <p><strong>LangChain</strong> 是最流行的 AI Agent 开发框架，封装了大量常用组件，让你不用从零写代码。</p>
+
+                <h3>安装 LangChain</h3>
+                <div class="code-block"># 基础安装
+pip install langchain langchain-openai
+
+# 常用扩展
+pip install langchain-community  # 第三方工具集成
+pip install langchainhub        # Prompt 模板市场
+pip install faiss-cpu           # 向量数据库（用于 RAG）</div>
+
+                <h3>第一个 LangChain Agent</h3>
+                <div class="code-block"># langchain_first_agent.py
+from langchain_openai import ChatOpenAI
+from langchain.agents import load_tools, initialize_agent
+
+# 1. 初始化大模型
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    temperature=0.7,
+    api_key="sk-xxxx"  # 建议用环境变量
+)
+
+# 2. 加载工具（搜索 + 计算器）
+tools = load_tools(["search", "ddg-search", "Calculator"], llm=llm)
+
+# 3. 初始化 Agent（使用 ReAct 模式）
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent="zero-shot-react-description",  # ReAct 模式
+    verbose=True,  # 打印思考过程
+    max_iterations=5  # 最多思考5轮
+)
+
+# 4. 运行！
+result = agent.run("2025年诺贝尔物理学奖得主是谁？")
+print(result)</div>
+
+                <div class="tip-box"><strong>💡 verbose=True</strong> 非常有用！开启后你可以看到 Agent 的完整思考过程，理解它为什么做出每个决定。</div>
+            </div>
+
+            <!-- LangChain Chain -->
+            <div class="chapter-section">
+                <h2>🔗 5.2 LangChain Chain（链式调用）</h2>
+                <p>Chain 是 LangChain 的核心概念——把多个步骤串联起来工作。</p>
+
+                <h3>LCEL — LangChain Expression Language</h3>
+                <div class="code-block"># 用 LCEL 构建 Chain（管道式写法）
+from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain.output_parsers import StrOutputParser
+
+llm = ChatOpenAI(model="gpt-4o-mini")
+
+# 链式调用
+chain = (
+    PromptTemplate.from_template("请用一句话介绍：{topic}")
+    | llm
+    | StrOutputParser()
+)
+
+# 执行
+result = chain.invoke({"topic": "人工智能"})
+print(result)  # 输出：一句话介绍</div>
+
+                <h3>构建 RAG 问答系统</h3>
+                <div class="code-block"># RAG = Retrieval Augmented Generation（检索增强生成）
+# 原理：先从文档中检索相关内容，再让 AI 基于检索结果回答
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+
+# 1. 准备文档
+documents = [
+    "Python的优势：易学、功能强大、生态丰富...",
+    "Java的优势：跨平台、企业级应用、生态成熟...",
+    "JavaScript的优势：全栈开发、前端唯一选择..."
+]
+
+# 2. 分块 + 向量化
+splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+chunks = splitter.split_text("\n".join(documents))
+
+# 3. 存入向量数据库
+embeddings = OpenAIEmbeddings()
+vectorstore = FAISS.from_texts(chunks, embeddings)
+
+# 4. 构建 RAG Chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=ChatOpenAI(model="gpt-4o-mini"),
+    retriever=vectorstore.as_retriever()
+)
+
+# 5. 问答
+result = qa_chain.run("Python和Java哪个更适合初学者？")
+print(result)</div>
+            </div>
+
+            <!-- AutoGen -->
+            <div class="chapter-section">
+                <h2>🤝 5.3 AutoGen — 微软多智能体框架</h2>
+                <p><strong>AutoGen</strong> 是微软开源的多智能体协作框架，多个 Agent 可以对话、协作完成复杂任务。</p>
+
+                <div class="code-block"># 安装
+pip install autogen
+
+import autogen
+
+# 1. 定义 Agent（类似定义角色）
+assistant = autogen.AssistantAgent(
+    name="assistant",
+    llm_config={
+        "model": "gpt-4o-mini",
+        "api_key": "sk-xxxx",
+        "temperature": 0.7
+    }
+)
+
+# 2. 定义用户代理（代表人类）
+user_proxy = autogen.UserProxyAgent(
+    name="user_proxy",
+    human_input_mode="NEVER",  # 不需要人工介入
+    max_consecutive_auto_reply=3
+)
+
+# 3. 启动对话
+user_proxy.initiate_chat(
+    assistant,
+    message="帮我用Python写一个快速排序算法，并测试它"
+)</div>
+
+                <h3>多 Agent 协作示例</h3>
+                <div class="code-block"># 多 Agent 协作：代码审查流水线
+import autogen
+
+# Agent 1: 开发者
+developer = autogen.AssistantAgent(
+    name="Developer",
+    llm_config={"model": "gpt-4o-mini", "temperature": 0.3},
+    system_message="你是Python开发工程师，负责编写代码。"
+)
+
+# Agent 2: 代码审查员
+reviewer = autogen.AssistantAgent(
+    name="Reviewer",
+    llm_config={"model": "gpt-4o-mini", "temperature": 0.3},
+    system_message="你是资深代码审查员，负责检查代码质量、安全和性能问题。"
+)
+
+# Agent 3: 测试工程师
+tester = autogen.AssistantAgent(
+    name="Tester",
+    llm_config={"model": "gpt-4o-mini", "temperature": 0.3},
+    system_message="你是测试工程师，负责验证代码正确性。"
+)
+
+# 编排多 Agent 协作
+groupchat = autogen.GroupChat(agents=[developer, reviewer, tester], messages=[])
+manager = autogen.GroupChatManager(groupchat=groupchat)
+
+# 启动协作任务
+user_proxy.initiate_chat(
+    manager,
+    message="写一个计算器程序，实现加减乘除，并做好测试"
+)</div>
+            </div>
+
+            <!-- CrewAI -->
+            <div class="chapter-section">
+                <h2>👥 5.4 CrewAI — 多 Agent 编排框架</h2>
+                <p><strong>CrewAI</strong> 是新兴的多 Agent 框架，主打"角色扮演 + 任务协作"的概念，特别适合业务流程自动化。</p>
+
+                <div class="code-block"># 安装
+pip install crewai crewai-tools
+
+from crewai import Agent, Task, Crew
+
+# 1. 定义 Agent（角色）
+researcher = Agent(
+    role="高级研究员",
+    goal="搜索并整理最准确的信息",
+    backstory="你是一名有10年经验的研究员，擅长信息检索和分析。",
+    verbose=True
+)
+
+writer = Agent(
+    role="专业内容编辑",
+    goal="将研究结果转化为通俗易懂的文章",
+    backstory="你是资深编辑，擅长把复杂内容写得易懂有趣。",
+    verbose=True
+)
+
+# 2. 定义任务
+task1 = Task(
+    description="研究 AI Agent 的最新发展趋势，整理3个重要趋势",
+    agent=researcher
+)
+
+task2 = Task(
+    description="根据研究报告，写一篇1000字的科普文章",
+    agent=writer,
+    context=[task1]  # 依赖前一个任务的输出
+)
+
+# 3. 组建团队，执行任务
+crew = Crew(agents=[researcher, writer], tasks=[task1, task2])
+result = crew.kickoff()
+print(result)</div>
+            </div>
+
+            <!-- Dify -->
+            <div class="chapter-section">
+                <h2>🌐 5.5 Dify — 开源 LLM 应用平台</h2>
+                <p><strong>Dify</strong> 是一个开源的 LLM 应用开发平台，零代码即可创建 AI 应用，适合非程序员。</p>
+
+                <table class="model-compare">
+                    <tr><th>特性</th><th>Dify</th><th>代码开发（LangChain）</th></tr>
+                    <tr><td>编程要求</td><td>零代码/低代码</td><td>需要 Python 编程</td></tr>
+                    <tr><td>灵活性</td><td>一般</td><td>非常高</td></tr>
+                    <tr><td>部署难度</td><td>一键部署</td><td>需要自己搭建</td></tr>
+                    <tr><td>适合人群</td><td>产品/运营/非程序员</td><td>开发者</td></tr>
+                    <tr><td>费用</td><td>自托管免费</td><td>代码免费，API 付费</td></tr>
+                </table>
+
+                <h3>Dify 的主要功能</h3>
+                <div class="code-block"># Dify 可以做的事（不需要写代码）：
+# - 可视化搭建 RAG 流程
+# - 创建 AI 对话应用
+# - 定义 Agent 工作流
+# - 集成多种模型（OpenAI/Claude/本地模型）
+# - API 一键发布</div>
+
+                <div class="highlight">
+                    <strong>🎯 推荐学习路径：</strong>初学者可以用 <strong>Dify</strong> 快速体验 AI 应用搭建，理解 Agent 的工作原理后再学习 <strong>LangChain</strong>，从可视化工具有了直观认知，再深入代码层面。
+                </div>
+            </div>
+
+            <!-- 项目实战 -->
+            <div class="chapter-section">
+                <h2>🚀 5.6 实战项目：构建一个 AI 助手</h2>
+                <p>综合运用所学知识，构建一个完整的 AI 助手项目。</p>
+
+                <h3>项目需求</h3>
+                <div class="code-block"># 项目：个人 AI 学习助手
+# 功能需求：
+# 1. 能够回答 AI 相关问题（知识库）
+# 2. 能够联网搜索最新信息
+# 3. 能够执行 Python 代码
+# 4. 能够记住用户的偏好和历史
+# 5. 有友好的对话界面
+
+# 技术选型：
+# - LangChain（Agent 框架）
+# - GPT-4o-mini（经济实惠）
+# - FAISS（本地向量数据库）
+# - Streamlit（快速搭建 Web 界面）</div>
+
+                <h3>完整项目结构</h3>
+                <div class="code-block"># 项目结构
+ai-assistant/
+├── app.py              # Streamlit 主界面
+├── agent/
+│   ├── __init__.py
+│   ├── assistant.py    # Agent 核心逻辑
+│   ├── tools.py         # 工具定义
+│   └── memory.py        # 记忆管理
+├── data/
+│   └── knowledge.md     # 知识库文档
+├── requirements.txt     # 依赖列表
+└── README.md            # 项目说明</div>
+
+                <h3>核心代码</h3>
+                <div class="code-block"># agent/assistant.py
+from langchain_openai import ChatOpenAI
+from langchain.agents import initialize_agent, Tool
+from langchain.memory import ConversationBufferMemory
+from agent.tools import get_tools
+from agent.memory import AgentMemory
+
+class AIAssistant:
+    def __init__(self, name="小智"):
+        self.name = name
+        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+        self.memory = AgentMemory()
+        self.tools = get_tools(self.llm)
+        
+        self.agent = initialize_agent(
+            tools=self.tools,
+            llm=self.llm,
+            agent="conversational-react-description",
+            memory=self.memory.to_langchain(),
+            verbose=True
+        )
+    
+    def chat(self, message):
+        # 加入记忆上下文
+        context = self.memory.get_context()
+        full_message = f"用户说：{message}\n\n相关记忆：{context}"
+        
+        response = self.agent.run(full_message)
+        self.memory.add("user", message)
+        self.memory.add("assistant", response)
+        return response
+
+# app.py
+import streamlit as st
+from agent.assistant import AIAssistant
+
+st.title("🤖 我的 AI 学习助手")
+
+if "assistant" not in st.session_state:
+    st.session_state.assistant = AIAssistant()
+
+user_input = st.text_input("你有什么问题？", "")
+if user_input:
+    response = st.session_state.assistant.chat(user_input)
+    st.markdown(f"**助手：** {response}")</div>
+            </div>
+
+            <!-- 小结 -->
+            <div class="chapter-section">
+                <h2>📝 本章小结</h2>
+                <table class="model-compare">
+                    <tr><th>框架/工具</th><th>定位</th><th>特点</th><th>适合场景</th></tr>
+                    <tr><td>LangChain</td><td>Agent 框架</td><td>最流行，组件丰富</td><td>生产级 Agent 开发</td></tr>
+                    <tr><td>AutoGen</td><td>多智能体框架</td><td>微软出品，多 Agent 协作</td><td>复杂协作流程</td></tr>
+                    <tr><td>CrewAI</td><td>多智能体框架</td><td>角色清晰，上手简单</td><td>业务流程自动化</td></tr>
+                    <tr><td>Dify</td><td>无代码平台</td><td>零代码，可视化</td><td>快速原型/非程序员</td></tr>
+                    <tr><td>Streamlit</td><td>Web 框架</td><td>Python 专用，快速</td><td>快速搭建 AI 界面</td></tr>
+                </table>
+            </div>
+
+            <!-- 导航 -->
+            <div class="nav-bottom">
+                <a href="chapter4.html" class="nav-btn prev">← 上一章：Agent核心原理</a>
+                <a href="chapter6.html" class="nav-btn next" style="background:#e65100;">下一章：项目实战 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
