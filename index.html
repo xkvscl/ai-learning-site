@@ -3,204 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI学习网站</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        header {
-            text-align: center;
-            color: white;
-            padding: 3rem 0;
-        }
-        
-        header h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .hero {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-        }
-        
-        .hero h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .feature-card h3 {
-            color: #764ba2;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .feature-card li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        .feature-card li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-        
-        footer {
-            text-align: center;
-            color: white;
-            padding: 2rem;
-            opacity: 0.8;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 1rem;
-            transition: transform 0.3s;
-        }
-        
-        .cta-button:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    <title>AI Agent 学习网站 - 零基础入门</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 AI学习网站</h1>
-            <p>从入门到精通，全面学习人工智能</p>
-        </header>
-        
-        <div class="hero">
-            <h2>欢迎来到AI学习之旅</h2>
-            <p>这里整理了机器学习、深度学习、自然语言处理等AI相关知识。无论你是初学者还是有经验的开发者，都能在这里找到有价值的内容。</p>
-            <a href="#" class="cta-button">开始学习 →</a>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+                <li><a href="resources.html">学习资源</a></li>
+            </ul>
         </div>
-        
-        <div class="features">
-            <div class="feature-card">
-                <h3>📚 基础知识</h3>
-                <ul>
-                    <li>Python编程入门</li>
-                    <li>数学基础（线性代数、概率论）</li>
-                    <li>机器学习概念</li>
-                    <li>常用算法讲解</li>
-                </ul>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🤖 零基础学 AI Agent 开发</h1>
+            <p>从零开始，循序渐进，掌握 AI Agent 开发技能</p>
+            <div class="hero-badges">
+                <span class="badge">✅ 零基础友好</span>
+                <span class="badge">✅ 免费资源</span>
+                <span class="badge">✅ 交互式学习</span>
+                <span class="badge">✅ 代码实战</span>
             </div>
-            
-            <div class="feature-card">
-                <h3>🧠 深度学习</h3>
-                <ul>
-                    <li>神经网络基础</li>
-                    <li>PyTorch/TensorFlow</li>
-                    <li>计算机视觉</li>
-                    <li>Transformer模型</li>
-                </ul>
-            </div>
-            
-            <div class="feature-card">
-                <h3>💬 NLP自然语言处理</h3>
-                <ul>
-                    <li>文本预处理</li>
-                    <li>词向量表示</li>
-                    <li>大语言模型</li>
-                    <li>对话系统实战</li>
-                </ul>
-            </div>
-            
-            <div class="feature-card">
-                <h3>🛠️ 实战项目</h3>
-                <ul>
-                    <li>图像分类项目</li>
-                    <li>情感分析系统</li>
-                    <li>聊天机器人</li>
-                    <li>AI Agent开发</li>
-                </ul>
-            </div>
-            
-            <div class="feature-card">
-                <h3>📖 学习资源</h3>
-                <ul>
-                    <li>优质教程推荐</li>
-                    <li>经典论文解读</li>
-                    <li>开源项目分享</li>
-                    <li>面试题库</li>
-                </ul>
-            </div>
-            
-            <div class="feature-card">
-                <h3>👥 社区交流</h3>
-                <ul>
-                    <li>学习笔记分享</li>
-                    <li>问题讨论区</li>
-                    <li>项目协作</li>
-                    <li>经验交流</li>
-                </ul>
+            <a href="roadmap.html" class="cta-btn">开始学习 →</a>
+        </div>
+        <div class="hero-visual">
+            <div class="agent-diagram">
+                <div class="agent-box">
+                    <div class="agent-icon">🧠</div>
+                    <div class="agent-label">AI Agent</div>
+                </div>
+                <div class="agent-arrows">
+                    <div class="arrow-item">📥 感知环境</div>
+                    <div class="arrow-item">💭 推理决策</div>
+                    <div class="arrow-item">⚡ 执行行动</div>
+                </div>
             </div>
         </div>
-        
-        <footer>
-            <p>🤖 AI学习网站 - 让AI学习更简单</p>
-            <p>© 2026 AI Learning Site. Built with ❤️</p>
-        </footer>
-    </div>
+    </section>
+
+    <!-- 课程模块 -->
+    <section class="modules">
+        <div class="container">
+            <h2 class="section-title">📚 课程模块</h2>
+            <p class="section-sub">按顺序学习，循序渐进掌握 AI Agent 开发</p>
+            <div class="module-grid">
+                <div class="module-card" onclick="location.href='roadmap.html#module1'">
+                    <div class="module-num">01</div>
+                    <div class="module-icon">🐍</div>
+                    <h3>Python 基础</h3>
+                    <p>变量、函数、类、库的使用，为 AI 开发打好基础</p>
+                    <div class="module-meta">
+                        <span>⏱ 约2周</span>
+                        <span class="level beginner">入门</span>
+                    </div>
+                </div>
+                <div class="module-card" onclick="location.href='roadmap.html#module2'">
+                    <div class="module-num">02</div>
+                    <div class="module-icon">🤖</div>
+                    <h3>AI 基本概念</h3>
+                    <p>了解机器学习、大语言模型、Prompt 工程等核心概念</p>
+                    <div class="module-meta">
+                        <span>⏱ 约1周</span>
+                        <span class="level beginner">入门</span>
+                    </div>
+                </div>
+                <div class="module-card" onclick="location.href='roadmap.html#module3'">
+                    <div class="module-num">03</div>
+                    <div class="module-icon">🔗</div>
+                    <h3>LLM API 调用</h3>
+                    <p>学习调用 OpenAI、Claude 等大模型 API，构建对话应用</p>
+                    <div class="module-meta">
+                        <span>⏱ 约1周</span>
+                        <span class="level intermediate">进阶</span>
+                    </div>
+                </div>
+                <div class="module-card" onclick="location.href='roadmap.html#module4'">
+                    <div class="module-num">04</div>
+                    <div class="module-icon">⚙️</div>
+                    <h3>Agent 核心原理</h3>
+                    <p>理解 ReAct、Tool Use、Memory 等 Agent 核心机制</p>
+                    <div class="module-meta">
+                        <span>⏱ 约2周</span>
+                        <span class="level intermediate">进阶</span>
+                    </div>
+                </div>
+                <div class="module-card" onclick="location.href='roadmap.html#module5'">
+                    <div class="module-num">05</div>
+                    <div class="module-icon">🛠️</div>
+                    <h3>Agent 框架实战</h3>
+                    <p>使用 LangChain、AutoGen 等框架构建真实 Agent 应用</p>
+                    <div class="module-meta">
+                        <span>⏱ 约3周</span>
+                        <span class="level advanced">高级</span>
+                    </div>
+                </div>
+                <div class="module-card" onclick="location.href='roadmap.html#module6'">
+                    <div class="module-num">06</div>
+                    <div class="module-icon">🚀</div>
+                    <h3>项目实战</h3>
+                    <p>完整开发一个 AI Agent 项目，从设计到部署上线</p>
+                    <div class="module-meta">
+                        <span>⏱ 约2周</span>
+                        <span class="level advanced">高级</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 学习方式 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">🎯 学习方式</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">📖</div>
+                    <h3>图文教程</h3>
+                    <p>清晰易懂的图文讲解，零基础也能看懂</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💻</div>
+                    <h3>代码演示</h3>
+                    <p>可运行的代码示例，边学边练</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🧪</div>
+                    <h3>章节测验</h3>
+                    <p>每章配套小测验，检验学习成果</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🆓</div>
+                    <h3>完全免费</h3>
+                    <p>所有资源均来自互联网免费资源，注明版权</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <p>本站仅作学习整理用途，如有侵权请联系删除</p>
+            <div class="footer-links">
+                <a href="roadmap.html">学习路线</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
