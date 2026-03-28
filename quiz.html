@@ -5,163 +5,378 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>章节测验 - AI Agent 学习网站</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+        .quiz-progress {
+            background: rgba(26,26,46,0.9);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        .quiz-progress-info { flex: 1; }
+        .quiz-progress-info h3 { color: white; font-size: 1rem; margin-bottom: 0.3rem; }
+        .quiz-progress-info p { color: #94a3b8; font-size: 0.82rem; }
+        .progress-bar-wrap { flex: 2; background: rgba(255,255,255,0.08); border-radius: 50px; height: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #6c63ff, #a855f7); border-radius: 50px; transition: width 0.5s ease; }
+        .progress-text { color: #8b85ff; font-weight: 700; font-size: 1rem; min-width: 60px; text-align: right; }
+        .quiz-card { background: rgba(26,26,46,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; backdrop-filter: blur(10px); }
+        .quiz-card h3 { color: white; font-size: 0.97rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.7; }
+        .quiz-card h3 code { background: rgba(108,99,255,0.12); padding: 0.15rem 0.45rem; border-radius: 5px; font-size: 0.85em; color: #8b85ff; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option { padding: 0.8rem 1.2rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer; transition: all 0.25s; font-size: 0.9rem; color: #94a3b8; position: relative; }
+        .quiz-option:hover { border-color: #6c63ff; background: rgba(108,99,255,0.08); color: #e2e8f0; }
+        .quiz-option.selected { border-color: #6c63ff; background: rgba(108,99,255,0.15); color: white; }
+        .quiz-option.correct { border-color: #10b981; background: rgba(16,185,129,0.12); color: #6ee7b7; }
+        .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.12); color: #fca5a5; }
+        .quiz-result { margin-top: 1rem; padding: 1rem 1.3rem; border-radius: 12px; font-size: 0.88rem; line-height: 1.7; display: none; }
+        .quiz-result.show { display: block; }
+        .quiz-result.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
+        .quiz-result.wrong { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+        .quiz-section-title { font-size: 1.2rem; font-weight: 800; color: #8b85ff; margin: 2.5rem 0 1.2rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(108,99,255,0.2); display: flex; align-items: center; gap: 0.6rem; }
+        .score-display { text-align: center; padding: 3rem 2rem; background: rgba(26,26,46,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; margin-bottom: 2rem; backdrop-filter: blur(10px); }
+        .score-display .score-num { font-size: 4rem; font-weight: 900; background: linear-gradient(135deg, #6c63ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
+        .score-display h2 { color: white; font-size: 1.5rem; margin: 1rem 0 0.5rem; }
+        .score-display p { color: #94a3b8; font-size: 0.95rem; }
+        .chapter-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); color: #8b85ff; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.78rem; font-weight: 700; }
+        .reset-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem; background: linear-gradient(135deg, #6c63ff, #a855f7); color: white; border: none; border-radius: 50px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 1rem; transition: all 0.3s; }
+        .reset-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.4); }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <a href="index.html" class="nav-logo">AI Agent 学习</a>
             <ul class="nav-links">
                 <li><a href="index.html">首页</a></li>
                 <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
                 <li><a href="quiz.html" class="active">小测验</a></li>
                 <li><a href="demo.html">代码演示</a></li>
-                <li><a href="resources.html">学习资源</a></li>
             </ul>
         </div>
     </nav>
 
-    <div class="page-header">
-        <h1>🧪 章节小测验</h1>
-        <p>检验你的学习成果，点击选项查看答案解析</p>
-    </div>
+    <div style="padding: 9rem 2rem 2rem;">
+        <div class="container" style="max-width: 820px; margin: 0 auto;">
 
-    <section class="quiz-section">
-        <div class="container">
+            <div class="score-display" id="scoreDisplay" style="display:none;">
+                <div class="score-num" id="scoreNum">0/0</div>
+                <h2 id="scoreTitle">测验完成！</h2>
+                <p id="scoreDesc">再来一次巩固知识吧</p>
+                <button class="reset-btn" onclick="resetQuiz()">🔄 重新测验</button>
+            </div>
+
+            <div class="quiz-progress" id="progressBar">
+                <div class="quiz-progress-info">
+                    <h3>📊 学习进度追踪</h3>
+                    <p>完成测验解锁成就，获得学习徽章</p>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar" id="totalProgress" style="width:0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
 
             <!-- Python 测验 -->
-            <h2 id="python" style="margin-bottom:1.5rem;color:#6c63ff;">🐍 Python 基础测验</h2>
-
-            <div class="quiz-card">
-                <h3>Q1. 以下哪个是 Python 中定义函数的正确方式？</h3>
-                <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q1')">A. function greet(name):</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q1')">B. def greet(name):</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q1')">C. func greet(name):</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q1')">D. define greet(name):</div>
-                </div>
-                <div class="quiz-result" id="Q1">
-                    ✅ 正确答案是 B。Python 使用 <code>def</code> 关键字定义函数，语法为 <code>def 函数名(参数):</code>
-                </div>
+            <div class="quiz-section-title">
+                <span>🐍</span> Python 基础测验
+                <span class="chapter-badge">第1章</span>
             </div>
 
             <div class="quiz-card">
-                <h3>Q2. Python 中，以下哪种数据结构是不可变的（immutable）？</h3>
+                <h3>Q1. Python 中，用什么关键字来定义函数？</h3>
                 <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q2')">A. 列表 list</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q2')">B. 字典 dict</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q2')">C. 元组 tuple</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q2')">D. 集合 set</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. function</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. def</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. func</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. define</div>
                 </div>
-                <div class="quiz-result" id="Q2">
-                    ✅ 正确答案是 C。元组（tuple）创建后不能修改，是不可变数据结构。列表、字典、集合都是可变的。
-                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Python 使用 <code>def</code> 关键字定义函数，语法为 <code>def 函数名(参数):</code></div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Python 使用 <code>def</code> 关键字来定义函数，而不是其他选项。</div>
             </div>
 
             <div class="quiz-card">
-                <h3>Q3. 以下代码的输出结果是什么？<br><code style="background:#f5f5f5;padding:0.3rem 0.6rem;border-radius:4px;">print([x*2 for x in range(3)])</code></h3>
+                <h3>Q2. 以下哪种数据结构在 Python 中是不可变的（Immutable）？</h3>
                 <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q3')">A. [1, 2, 3]</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q3')">B. [0, 2, 4]</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q3')">C. [2, 4, 6]</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q3')">D. [0, 1, 2]</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 列表 list</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 字典 dict</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 元组 tuple</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 集合 set</div>
                 </div>
-                <div class="quiz-result" id="Q3">
-                    ✅ 正确答案是 B。<code>range(3)</code> 生成 [0,1,2]，每个元素乘以2得到 [0,2,4]。这是列表推导式的用法。
+                <div class="quiz-result" data-result="correct">✅ 正确！元组（tuple）创建后内容不可修改，是不可变数据类型。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！元组（tuple）是不可变的，其他选项都是可变的。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q3. <code>print([x*2 for x in range(3)])</code> 的输出结果是什么？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. [1, 2, 3]</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. [0, 2, 4]</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. [2, 4, 6]</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. [0, 1, 2]</div>
                 </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！<code>range(3)</code> 生成 [0,1,2]，每个元素乘以2得到 [0,2,4]。这是列表推导式的用法。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！<code>range(3)</code> 生成 [0,1,2]，乘以2后是 [0,2,4]。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q4. 下面哪个选项是 Python 中正确的字典访问方式？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. person(0)</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. person[0]</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. person["name"] 或 person.get("name")</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. person-&gt;name</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！字典用键来访问，如 <code>person["name"]</code>，或用安全的 <code>person.get("name")</code></div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！字典用键访问，如 <code>person["name"]</code>。</div>
             </div>
 
             <!-- AI 概念测验 -->
-            <h2 id="ai-concept" style="margin:3rem 0 1.5rem;color:#6c63ff;">🤖 AI 基本概念测验</h2>
-
-            <div class="quiz-card">
-                <h3>Q4. 大语言模型（LLM）中的 "Token" 是指什么？</h3>
-                <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q4')">A. 一个完整的单词</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q4')">B. 一个字符</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q4')">C. 模型处理文本的基本单位，可能是词、词片段或标点</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q4')">D. 一行文字</div>
-                </div>
-                <div class="quiz-result" id="Q4">
-                    ✅ 正确答案是 C。Token 是模型处理文本的基本单位，英文中大约 4 个字符 = 1 个 Token，中文大约 1-2 个字 = 1 个 Token。
-                </div>
+            <div class="quiz-section-title">
+                <span>🤖</span> AI 基本概念测验
+                <span class="chapter-badge">第2章</span>
             </div>
 
             <div class="quiz-card">
-                <h3>Q5. Prompt 工程中，"Temperature" 参数的作用是什么？</h3>
+                <h3>Q5. 大语言模型（LLM）中的 "Token" 是什么？</h3>
                 <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q5')">A. 控制模型的运行速度</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q5')">B. 控制输出的随机性，值越高输出越随机有创意</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q5')">C. 控制输出的最大长度</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q5')">D. 控制模型的记忆能力</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 一个完整的单词</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 一个中文字符</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 模型处理文本的基本单位</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 一段话</div>
                 </div>
-                <div class="quiz-result" id="Q5">
-                    ✅ 正确答案是 B。Temperature 控制输出的随机性：0 表示确定性输出，1 表示较随机，适合创意写作；精确任务建议用低值。
-                </div>
-            </div>
-
-            <!-- Agent 测验 -->
-            <h2 id="agent" style="margin:3rem 0 1.5rem;color:#6c63ff;">⚙️ AI Agent 测验</h2>
-
-            <div class="quiz-card">
-                <h3>Q6. AI Agent 与普通 LLM 对话的最大区别是什么？</h3>
-                <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q6')">A. Agent 的回答更准确</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q6')">B. Agent 只能处理文字</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q6')">C. Agent 能自主规划、调用工具、执行多步骤任务</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q6')">D. Agent 不需要大语言模型</div>
-                </div>
-                <div class="quiz-result" id="Q6">
-                    ✅ 正确答案是 C。AI Agent 的核心特征是自主性：能感知环境、制定计划、调用外部工具（搜索、代码执行等），完成复杂的多步骤任务。
-                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Token 是模型处理文本的基本单位，英文约4字符≈1 Token，中文约1-2字≈1 Token。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Token 是模型处理文本的基本单位，不是简单的"字"或"词"。</div>
             </div>
 
             <div class="quiz-card">
-                <h3>Q7. ReAct 框架中，"ReAct" 代表什么？</h3>
+                <h3>Q6. "Temperature" 参数设为 0 和 1.0，哪个输出更随机、更有创意？</h3>
                 <div class="quiz-options">
-                    <div class="quiz-option" onclick="answer(this, false, 'Q7')">A. Real Action（真实行动）</div>
-                    <div class="quiz-option" onclick="answer(this, true, 'Q7')">B. Reasoning + Acting（推理 + 行动）</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q7')">C. Reactive Agent（反应式智能体）</div>
-                    <div class="quiz-option" onclick="answer(this, false, 'Q7')">D. Recurrent Action（循环行动）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 0</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. 1.0</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. 两者完全一样</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 无法确定</div>
                 </div>
-                <div class="quiz-result" id="Q7">
-                    ✅ 正确答案是 B。ReAct = Reasoning（推理）+ Acting（行动）。Agent 先思考（Thought），再行动（Action），再观察结果（Observation），循环直到完成任务。
-                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Temperature 越高，输出越随机；Temperature=0 时几乎确定，Temperature=1.0 时最有创意。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Temperature=1.0 输出最随机，Temperature=0 最确定。</div>
             </div>
 
-            <div style="text-align:center;margin-top:3rem;">
-                <a href="roadmap.html" class="cta-btn" style="background:var(--primary);color:white;">返回学习路线 →</a>
+            <div class="quiz-card">
+                <h3>Q7. Transformer 架构中的 "Attention"（注意力机制）主要解决了什么问题？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 让模型运行得更快</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 减少模型参数</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 让模型理解长文本中的上下文关系</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 自动翻译语言</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Attention 让模型能够"关注"输入中最重要的部分，理解上下文关系，解决了长文本处理难题。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Attention 的核心是让模型理解上下文关系，而不只是提升速度。</div>
+            </div>
+
+            <!-- Agent 原理测验 -->
+            <div class="quiz-section-title">
+                <span>⚙️</span> Agent 核心原理测验
+                <span class="chapter-badge">第4章</span>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q8. AI Agent 与普通 AI 对话最核心的区别是什么？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. Agent 的回答更准确</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. Agent 能自主规划、调用工具、执行多步骤任务</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. Agent 只能处理文字</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. Agent 不需要大语言模型</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Agent 的核心是自主性：能感知环境、制定计划、调用工具，完成复杂的多步骤任务。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Agent 的核心是自主规划和使用工具，不只是更好的回答。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q9. ReAct 框架中，"ReAct" 代表什么？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. Real Action（真实行动）</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. Reasoning + Acting（推理 + 行动）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. Reactive Agent（反应式智能体）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. Recursive Action（递归行动）</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！ReAct = Reasoning（推理）+ Acting（行动）。核心循环：Thought → Action → Observation → ...</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！ReAct = Reasoning（推理）+ Acting（行动），是思考和行动的结合。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q10. Agent 的"记忆"系统中，以下哪种不属于记忆类型？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 短期记忆（当前对话）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 长期记忆（持久化存储）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. 情景记忆（经验教训）</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">D. 视觉记忆（图片存储）</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Agent 的记忆类型包括短期、长期和情景记忆，"视觉记忆"不是标准分类。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Agent 记忆分为短期、长期和情景三类，"视觉记忆"不是标准分类。</div>
+            </div>
+
+            <!-- API 测验 -->
+            <div class="quiz-section-title">
+                <span>🔗</span> LLM API 调用测验
+                <span class="chapter-badge">第3章</span>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q11. 关于 API Key 的安全使用，以下哪种做法是正确的？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 直接写在代码里提交到 GitHub</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 写在代码注释里方便同事查看</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 使用环境变量或 .env 文件管理，绝不提交到 GitHub</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 发邮件告诉团队成员</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！API Key 必须保密，使用环境变量存储，绝不提交到代码仓库。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！API Key 必须保密，用环境变量管理，绝不能写在代码或邮件里。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q12. "Function Calling" 在 AI Agent 开发中的主要作用是什么？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 让 AI 自动写代码</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. 让 AI 能够调用外部工具（如搜索、计算器）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. 提高 AI 的回答速度</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 让 AI 支持更多语言</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Function Calling 让 AI 能够调用外部工具，是 Agent 连接外部世界的桥梁。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Function Calling 的核心是让 AI 调用外部工具，实现 Agent 的工具能力。</div>
+            </div>
+
+            <!-- 综合测验 -->
+            <div class="quiz-section-title">
+                <span>🏆</span> 综合能力测验
+                <span class="chapter-badge">综合</span>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q13. 想让 AI Agent 帮你查询明天北京的天气并播报，以下哪个是正确的工具调用流程？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 直接问 AI，AI 立即回答天气</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">B. Agent 识别需要查天气 → 调用天气 API → 获取结果 → 播报给用户</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">C. AI Agent 不支持查天气</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 需要手动打开天气网站再复制给 AI</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Agent 通过 ReAct 循环识别需要查天气 → 工具调用 → 获取数据 → 播报，这是 Agent 的核心能力。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Agent 的正确流程是：识别需求 → 调用工具 → 获取结果 → 播报。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q14. 在 LangChain 中，"Chain" 是什么概念？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 一条代码语句</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 数据库的一条记录</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 将多个组件串联起来的工作流程</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 一种加密算法</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！Chain 是 LangChain 的核心概念，把 Prompt → LLM → OutputParser 等组件串联成工作流。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！Chain 是将多个组件串联的工作流程，是 LangChain 的核心抽象。</div>
+            </div>
+
+            <div class="quiz-card">
+                <h3>Q15. RAG（检索增强生成）技术主要用于解决什么问题？</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">A. 让模型运行得更快</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">B. 降低 API 调用成本</div>
+                    <div class="quiz-option" data-correct="true" onclick="answer(this)">C. 让 AI 能够回答最新/私有的信息（知识库）</div>
+                    <div class="quiz-option" data-correct="false" onclick="answer(this)">D. 让 AI 支持更多语言</div>
+                </div>
+                <div class="quiz-result" data-result="correct">✅ 正确！RAG 让 AI 从知识库检索相关信息再生成回答，解决模型知识过时/不足的问题。</div>
+                <div class="quiz-result" data-result="wrong">❌ 答错了！RAG 的核心作用是让 AI 能回答知识库中的最新/私有信息。</div>
+            </div>
+
+            <div style="text-align:center;padding:2rem 0;">
+                <button class="reset-btn" onclick="resetQuiz()">🔄 重新测验全部题目</button>
+                <p style="color:#94a3b8;font-size:0.85rem;margin-top:1rem;">共 15 道题，点击选项立即查看答案解析</p>
             </div>
 
         </div>
-    </section>
+    </div>
 
     <footer class="footer">
         <div class="container">
             <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
             <div class="footer-links">
                 <a href="index.html">首页</a>
-                <a href="resources.html">资源推荐</a>
+                <a href="roadmap.html">学习路线</a>
                 <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
             </div>
         </div>
     </footer>
 
     <script>
-        function answer(el, isCorrect, qid) {
-            // 防止重复点击
-            const options = el.parentElement.querySelectorAll('.quiz-option');
-            options.forEach(o => o.style.pointerEvents = 'none');
+        let totalQuestions = 15;
+        let answeredCount = 0;
+        let correctCount = 0;
 
-            const result = document.getElementById(qid);
-            if (isCorrect) {
-                el.classList.add('correct');
-                result.classList.add('correct', 'show');
-                result.innerHTML = '✅ ' + result.innerHTML.replace(/^[✅❌]\s*/, '');
-            } else {
-                el.classList.add('wrong');
-                result.classList.add('wrong', 'show');
-                result.innerHTML = '❌ 答错了！' + result.innerHTML.replace(/^[✅❌]\s*/, '');
+        function answer(el) {
+            const card = el.closest('.quiz-card');
+            const options = card.querySelectorAll('.quiz-option');
+            const isCorrect = el.dataset.correct === 'true';
+
+            // 防止重复答题
+            if (card.classList.contains('answered')) return;
+            card.classList.add('answered');
+
+            options.forEach(o => {
+                o.style.pointerEvents = 'none';
+                if (o.dataset.correct === 'true') o.classList.add('correct');
+            });
+
+            if (!isCorrect) el.classList.add('wrong');
+
+            const results = card.querySelectorAll('.quiz-result');
+            results.forEach(r => {
+                if (isCorrect && r.dataset.result === 'correct') r.classList.add('show');
+                if (!isCorrect && r.dataset.result === 'wrong') r.classList.add('show');
+            });
+
+            answeredCount++;
+            if (isCorrect) correctCount++;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const pct = Math.round((answeredCount / totalQuestions) * 100);
+            document.getElementById('totalProgress').style.width = pct + '%';
+            document.getElementById('progressText').textContent = pct + '%';
+
+            if (answeredCount === totalQuestions) {
+                document.getElementById('progressBar').style.display = 'none';
+                const sd = document.getElementById('scoreDisplay');
+                sd.style.display = 'block';
+                document.getElementById('scoreNum').textContent = correctCount + '/' + totalQuestions;
+                document.getElementById('scoreTitle').textContent =
+                    correctCount >= 13 ? '🎉 太棒了！完全掌握！' :
+                    correctCount >= 10 ? '👏 很不错！继续加油！' :
+                    correctCount >= 7  ? '💪 加油！再学一遍薄弱章节' :
+                                        '📚 建议重新学习各章节内容';
+                document.getElementById('scoreDesc').textContent =
+                    '正确率 ' + Math.round(correctCount / totalQuestions * 100) + '% · 继续巩固知识';
             }
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('answered'));
+            document.querySelectorAll('.quiz-option').forEach(o => {
+                o.classList.remove('correct', 'wrong', 'selected');
+                o.style.pointerEvents = 'auto';
+            });
+            document.querySelectorAll('.quiz-result').forEach(r => r.classList.remove('show'));
+            answeredCount = 0;
+            correctCount = 0;
+            document.getElementById('progressBar').style.display = 'flex';
+            document.getElementById('scoreDisplay').style.display = 'none';
+            document.getElementById('totalProgress').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
