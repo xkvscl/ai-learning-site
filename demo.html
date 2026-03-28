@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码演示 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html" class="active">代码演示</a></li>
+                <li><a href="resources.html">学习资源</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>💻 代码演示</h1>
+        <p>边学边练，可运行的代码示例帮助你快速掌握</p>
+    </div>
+
+    <section class="demo-section">
+        <div class="container">
+
+            <!-- LLM API 演示 -->
+            <h2 id="llm-api" style="margin-bottom:1.5rem;color:#6c63ff;">🔗 LLM API 调用示例</h2>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-dots"><span></span><span></span><span></span></div>
+                    <span class="demo-title">openai_chat.py — 调用 OpenAI API</span>
+                </div>
+                <div class="demo-body">
+                    <pre><span class="comment"># 安装依赖：pip install openai</span>
+<span class="keyword">import</span> openai
+
+<span class="comment"># 配置 API Key（建议使用环境变量）</span>
+openai.api_key = <span class="string">"sk-xxxxxxxxxxxxxxxx"</span>
+
+<span class="keyword">def</span> <span class="function">chat_with_gpt</span>(message):
+    response = openai.ChatCompletion.create(
+        model=<span class="string">"gpt-3.5-turbo"</span>,
+        messages=[
+            {"role": "system", "content": <span class="string">"你是一个有帮助的AI助手"</span>},
+            {"role": "user", "content": message}
+        ],
+        temperature=<span class="string">0.7</span>  <span class="comment"># 控制随机性</span>
+    )
+    <span class="keyword">return</span> response.choices[<span class="string">0</span>].message.content
+
+<span class="comment"># 调用示例</span>
+result = chat_with_gpt(<span class="string">"什么是AI Agent？"</span>)
+<span class="function">print</span>(result)</pre>
+                    <div class="demo-explain">
+                        <strong>📝 代码说明：</strong>这段代码演示了如何用 OpenAI API 发送对话请求。<code>messages</code> 列表包含系统提示和用户消息，
+                        <code>model</code> 指定使用的模型，<code>temperature</code> 控制回答的创意程度（0-1，越高越随机）。<br>
+                        ⚠️ <strong>注意：</strong>实际使用时，请将 API Key 存放在环境变量中，<strong>不要</strong>直接写在代码里！
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-dots"><span></span><span></span><span></span></div>
+                    <span class="demo-title">multi_turn_chat.py — 多轮对话</span>
+                </div>
+                <div class="demo-body">
+                    <pre><span class="comment"># 多轮对话示例</span>
+<span class="keyword">import</span> openai
+
+openai.api_key = <span class="string">"sk-xxxxxxxxxxxxxxxx"</span>
+
+<span class="comment"># 维护对话历史</span>
+messages = [
+    {"role": "system", "content": <span class="string">"你是一个Python编程老师"</span>}
+]
+
+<span class="keyword">def</span> <span class="function">ask</span>(user_input):
+    messages.append({"role": "user", "content": user_input})
+    response = openai.ChatCompletion.create(
+        model=<span class="string">"gpt-3.5-turbo"</span>,
+        messages=messages
+    )
+    reply = response.choices[<span class="string">0</span>].message.content
+    messages.append({"role": "assistant", "content": reply})
+    <span class="keyword">return</span> reply
+
+<span class="comment"># 第一轮对话</span>
+<span class="function">print</span>(<span class="function">ask</span>(<span class="string">"Python中列表和元组的区别是什么？"</span>))
+<span class="comment"># 第二轮（Agent记得之前的上下文）</span>
+<span class="function">print</span>(<span class="function">ask</span>(<span class="string">"那字典呢？和列表又有什么区别？"</span>))</pre>
+                    <div class="demo-explain">
+                        <strong>📝 代码说明：</strong>多轮对话的关键是把每次 Agent 的回复也加入 <code>messages</code> 列表，
+                        这样每次请求时都带上完整的对话历史，Agent 就能"记住"之前的对话内容了。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent 核心演示 -->
+            <h2 id="agent" style="margin:3rem 0 1.5rem;color:#6c63ff;">⚙️ Agent 核心机制示例</h2>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-dots"><span></span><span></span><span></span></div>
+                    <span class="demo-title">simple_agent.py — 最简 Agent（ReAct循环）</span>
+                </div>
+                <div class="demo-body">
+                    <pre><span class="comment"># 最简 Agent 实现 — ReAct 循环</span>
+<span class="keyword">import</span> openai
+
+<span class="keyword">class</span> <span class="function">SimpleAgent</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, tools):
+        self.tools = tools
+        self.messages = []
+
+    <span class="keyword">def</span> <span class="function">step</span>(self, user_input):
+        self.messages.append({"role": "user", "content": user_input})
+
+        <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="string">5</span>):  <span class="comment"># 最多思考5轮</span>
+            response = openai.ChatCompletion.create(
+                model=<span class="string">"gpt-3.5-turbo"</span>,
+                messages=self.messages + [{
+                    "role": "system",
+                    "content": <span class="string">f"可用工具: {list(self.tools.keys())}"</span>
+                }]
+            )
+            msg = response.choices[<span class="string">0</span>].message
+            self.messages.append(msg)
+
+            <span class="comment"># 解析工具调用</span>
+            <span class="keyword">if</span> msg.content.startswith(<span class="string">"ACTION:"</span>):
+                tool_name = msg.content.split(<span class="string">":"</span>)[<span class="string">1</span>].strip()
+                <span class="keyword">if</span> tool_name == <span class="string">"FINISH"</span>:
+                    <span class="keyword">return</span> msg.content.split(<span class="string">"FINISH:"</span>)[<span class="string">1</span>].strip()
+                result = self.tools[tool_name]()
+                self.messages.append({
+                    "role": "user",
+                    "content": <span class="string">f"工具 '{tool_name}' 返回: {result}"</span>
+                })
+            <span class="keyword">else</span>:
+                <span class="keyword">return</span> msg.content
+
+<span class="comment"># 使用示例</span>
+agent = SimpleAgent({
+    "search": <span class="keyword">lambda</span>: "搜索结果: AI Agent 是...",
+    "calculate": <span class="keyword">lambda</span>: "计算结果: 42"
+})
+<span class="function">print</span>(agent.step(<span class="string">"帮我搜索什么是AI Agent"</span>))</pre>
+                    <div class="demo-explain">
+                        <strong>📝 代码说明：</strong>这是一个最简 Agent 的核心逻辑：
+                        <strong>Thought → Action → Observation</strong> 循环。<br>
+                        ① Agent 思考（Thought）当前任务<br>
+                        ② 决定是否调用工具（Action）<br>
+                        ③ 获取工具返回结果（Observation）<br>
+                        ④ 循环直到任务完成，输出 <code>FINISH</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LangChain 演示 -->
+            <h2 id="langchain" style="margin:3rem 0 1.5rem;color:#6c63ff;">🛠️ LangChain 框架示例</h2>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-dots"><span></span><span></span><span></span></div>
+                    <span class="demo-title">langchain_demo.py — LangChain 基本用法</span>
+                </div>
+                <div class="demo-body">
+                    <pre><span class="comment"># 安装：pip install langchain langchain-openai</span>
+<span class="keyword">from</span> langchain_openai <span class="keyword">import</span> ChatOpenAI
+<span class="keyword">from</span> langchain.agents <span class="keyword">import</span> load_tools, initialize_agent
+
+<span class="comment"># 初始化模型</span>
+llm = ChatOpenAI(
+    model=<span class="string">"gpt-3.5-turbo"</span>,
+    openai_api_key=<span class="string">"sk-xxxxxxxx"</span>
+)
+
+<span class="comment"># 加载内置工具（搜索、计算器等）</span>
+tools = load_tools([<span class="string">"search"</span>, <span class="string">" Calculator"</span>], llm=llm)
+
+<span class="comment"># 创建 Agent</span>
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent=<span class="string">"zero-shot-react-description"</span>,  <span class="comment"># ReAct 模式</span>
+    verbose=<span class="string">True</span>  <span class="comment"># 显示思考过程</span>
+)
+
+<span class="comment"># 运行 Agent</span>
+result = agent.run(<span class="string">"2024年奥运会在哪里举办？"</span>)
+<span class="function">print</span>(result)</pre>
+                    <div class="demo-explain">
+                        <strong>📝 代码说明：</strong>LangChain 封装了 Agent 开发的大量重复工作：
+                        <code>load_tools</code> 加载内置工具，<code>initialize_agent</code> 初始化 Agent，<code>zero-shot-react-description</code>
+                        是最常用的 ReAct 推理模式。设置 <code>verbose=True</code> 可以看到 Agent 的完整思考过程，方便调试。
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;">
+                <a href="roadmap.html" class="cta-btn" style="background:var(--primary);color:white;">返回学习路线 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
