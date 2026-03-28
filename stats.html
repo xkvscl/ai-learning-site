@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习数据 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .stats-page { padding: 9rem 2rem 4rem; }
+        .stats-page .container { max-width: 1100px; margin: 0 auto; }
+        .stats-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem; }
+        .stats-header h1 { font-size: 2rem; font-weight: 900; color: white; }
+        .stats-header p { color: #94a3b8; font-size: 0.9rem; margin-top: 0.3rem; }
+        .header-right { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1.4rem; border-radius: 50px; background: linear-gradient(135deg, #6c63ff, #a855f7); color: white; border: none; cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.4); }
+        .btn-secondary { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1.4rem; border-radius: 50px; background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.3s; }
+        .btn-secondary:hover { border-color: rgba(108,99,255,0.4); color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
+        .stat-card { background: rgba(26,26,46,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 1.5rem; backdrop-filter: blur(10px); transition: all 0.3s; position: relative; overflow: hidden; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); border-color: rgba(108,99,255,0.3); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6c63ff, #a855f7); }
+        .stat-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+        .stat-value { font-size: 2.4rem; font-weight: 900; line-height: 1; margin-bottom: 0.3rem; background: linear-gradient(135deg, #6c63ff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-label { color: #94a3b8; font-size: 0.85rem; font-weight: 500; }
+        .stat-change { font-size: 0.78rem; margin-top: 0.5rem; color: #10b981; }
+        .overview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+        @media (max-width: 768px) { .overview-row { grid-template-columns: 1fr; } }
+        .panel { background: rgba(26,26,46,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 1.8rem; backdrop-filter: blur(10px); }
+        .panel-title { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .circular-progress-wrap { display: flex; align-items: center; justify-content: center; gap: 3rem; padding: 1rem 0; }
+        .circular-item { text-align: center; }
+        .circular-item svg { transform: rotate(-90deg); }
+        .circ-bg { stroke: rgba(255,255,255,0.08); }
+        .circ-fill { stroke-linecap: round; transition: stroke-dashoffset 1.2s ease; }
+        .circ-label { font-size: 1.6rem; font-weight: 900; color: white; margin-top: -2.2rem; }
+        .circ-sub { color: #64748b; font-size: 0.75rem; margin-top: 0.3rem; }
+        .chapter-progress-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .chapter-progress-item { display: flex; align-items: center; gap: 1rem; }
+        .chapter-icon { font-size: 1.2rem; width: 30px; text-align: center; }
+        .chapter-info { flex: 1; }
+        .chapter-name { color: white; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+        .chapter-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 50px; height: 8px; overflow: hidden; }
+        .chapter-bar { height: 100%; border-radius: 50px; transition: width 1s ease; }
+        .chapter-pct { font-size: 0.75rem; color: #64748b; min-width: 35px; text-align: right; }
+        .bar-purple { background: linear-gradient(90deg, #6c63ff, #a855f7); }
+        .bar-green { background: linear-gradient(90deg, #10b981, #059669); }
+        .bar-orange { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .bar-red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .bar-blue { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .cal-header { text-align: center; color: #64748b; font-size: 0.7rem; font-weight: 600; padding: 0.3rem 0; }
+        .cal-day { aspect-ratio: 1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .cal-day:hover { border-color: rgba(108,99,255,0.5); }
+        .cal-day.level-0 { background: rgba(255,255,255,0.04); color: #374151; }
+        .cal-day.level-1 { background: rgba(108,99,255,0.25); color: #c4b5fd; }
+        .cal-day.level-2 { background: rgba(108,99,255,0.45); color: #a78bfa; }
+        .cal-day.level-3 { background: rgba(108,99,255,0.65); color: white; }
+        .cal-day.level-4 { background: #6c63ff; color: white; box-shadow: 0 0 8px rgba(108,99,255,0.5); }
+        .cal-day.level-5 { background: linear-gradient(135deg, #6c63ff, #a855f7); color: white; box-shadow: 0 0 10px rgba(108,99,255,0.5); }
+        .cal-legend { display: flex; align-items: center; gap: 0.4rem; margin-top: 1rem; justify-content: flex-end; }
+        .cal-legend span { font-size: 0.7rem; color: #64748b; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 0.5rem; height: 110px; margin-top: 1rem; }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+        .bar-col-bar { width: 100%; border-radius: 6px 6px 0 0; background: linear-gradient(to top, #6c63ff, #a855f7); transition: height 1s ease; min-height: 3px; }
+        .bar-col-label { font-size: 0.68rem; color: #64748b; }
+        .quiz-history { display: flex; flex-direction: column; gap: 0.7rem; }
+        .quiz-history-item { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 0.9rem 1.1rem; transition: all 0.2s; }
+        .quiz-history-item:hover { border-color: rgba(108,99,255,0.3); background: rgba(108,99,255,0.05); }
+        .quiz-score-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; }
+        .quiz-info { flex: 1; }
+        .quiz-info h4 { color: white; font-size: 0.85rem; margin-bottom: 0.2rem; }
+        .quiz-info p { color: #64748b; font-size: 0.75rem; }
+        .quiz-badge { padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+        .badge-excellent { background: rgba(16,185,129,0.15); color: #10b981; }
+        .badge-good { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .badge-average { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .badge-poor { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .activity-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .activity-item { display: flex; align-items: flex-start; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: #6c63ff; flex-shrink: 0; margin-top: 5px; box-shadow: 0 0 6px rgba(108,99,255,0.5); }
+        .activity-time { font-size: 0.7rem; color: #64748b; min-width: 50px; }
+        .activity-text { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        .activity-text strong { color: white; }
+        .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+        .skill-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1rem; text-align: center; transition: all 0.3s; }
+        .skill-item:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-3px); }
+        .skill-name { color: #94a3b8; font-size: 0.78rem; margin-bottom: 0.6rem; font-weight: 600; }
+        .skill-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 50px; height: 7px; overflow: hidden; }
+        .skill-bar { height: 100%; border-radius: 50px; transition: width 1.2s ease; }
+        .skill-pct { font-size: 0.75rem; font-weight: 700; margin-top: 0.4rem; }
+        .badge-grid { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+        .badge-item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; width: 80px; text-align: center; opacity: 0.35; filter: grayscale(1); transition: all 0.3s; cursor: default; }
+        .badge-item.unlocked { opacity: 1; filter: none; }
+        .badge-item:hover { transform: translateY(-3px); }
+        .badge-icon { font-size: 2rem; }
+        .badge-name { font-size: 0.68rem; color: #94a3b8; font-weight: 600; }
+        .badge-item.unlocked .badge-name { color: #6c63ff; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: rgba(26,26,46,0.98); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; max-width: 480px; width: 100%; animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal h3 { color: white; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .modal p { color: #94a3b8; font-size: 0.88rem; margin-bottom: 1.5rem; }
+        .goal-form { display: flex; flex-direction: column; gap: 1rem; }
+        .goal-input-group { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .goal-input { flex: 1; min-width: 120px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem 1rem; color: white; font-size: 0.88rem; outline: none; transition: all 0.2s; }
+        .goal-input:focus { border-color: #6c63ff; box-shadow: 0 0 0 3px rgba(108,99,255,0.15); }
+        .goal-input::placeholder { color: #64748b; }
+        .modal-actions { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; }
+        .modal-close { padding: 0.6rem 1.2rem; border-radius: 50px; background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 0.88rem; transition: all 0.2s; }
+        .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #6c63ff, #a855f7); color: white; padding: 0.8rem 1.8rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; z-index: 99999; box-shadow: 0 8px 30px rgba(108,99,255,0.4); animation: toastIn 0.3s ease; pointer-events: none; }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .add-time-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 50px; background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 0.82rem; transition: all 0.2s; margin-top: 0.8rem; }
+        .add-time-btn:hover { border-color: rgba(108,99,255,0.4); color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="stats.html" class="active">学习数据</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="stats-page">
+        <div class="container">
+            <div class="stats-header">
+                <div>
+                    <h1>📊 学习数据中心</h1>
+                    <p id="todayDate">记录每一天的学习成长</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn-secondary" onclick="resetAll()">🗑️ 重置</button>
+                    <button class="btn-primary" onclick="openGoalModal()">🎯 目标</button>
+                </div>
+            </div>
+
+            <!-- 核心数据 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="statDays">0</div>
+                    <div class="stat-label">学习天数</div>
+                    <div class="stat-change" id="streakText">本周已学 0 天</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value" id="statHours">0</div>
+                    <div class="stat-label">总学习时长（小时）</div>
+                    <div class="stat-change" id="hoursGoal">目标: 100h</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="statCompleted">0/6</div>
+                    <div class="stat-label">已完成章节</div>
+                    <div class="stat-change" id="chapterGoal">章节 0/6</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="statQuiz">0%</div>
+                    <div class="stat-label">平均测验正确率</div>
+                    <div class="stat-change" id="quizBest">最高: 0%</div>
+                </div>
+            </div>
+
+            <!-- 进度圆环 + 日历 -->
+            <div class="overview-row">
+                <div class="panel">
+                    <div class="panel-title">📈 学习总进度</div>
+                    <div class="circular-progress-wrap">
+                        <div class="circular-item">
+                            <svg width="130" height="130" viewBox="0 0 130 130">
+                                <circle class="circ-bg" cx="65" cy="65" r="52" stroke-width="9"/>
+                                <circle class="circ-fill" id="circOverall" cx="65" cy="65" r="52" stroke-width="9" stroke="url(#grad1)"/>
+                                <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+                            </svg>
+                            <div class="circ-label" id="circLabelOverall">0%</div>
+                            <div class="circ-sub">总体进度</div>
+                        </div>
+                        <div class="circular-item">
+                            <svg width="95" height="95" viewBox="0 0 95 95">
+                                <circle class="circ-bg" cx="47.5" cy="47.5" r="38" stroke-width="8"/>
+                                <circle class="circ-fill" id="circChapter" cx="47.5" cy="47.5" r="38" stroke-width="8" stroke="#10b981"/>
+                            </svg>
+                            <div class="circ-label" style="font-size:1.3rem;margin-top:-1.8rem;" id="circLabelChapter">0/6</div>
+                            <div class="circ-sub">章节完成</div>
+                        </div>
+                        <div class="circular-item">
+                            <svg width="95" height="95" viewBox="0 0 95 95">
+                                <circle class="circ-bg" cx="47.5" cy="47.5" r="38" stroke-width="8"/>
+                                <circle class="circ-fill" id="circQuiz" cx="47.5" cy="47.5" r="38" stroke-width="8" stroke="#f59e0b"/>
+                            </svg>
+                            <div class="circ-label" style="font-size:1.3rem;margin-top:-1.8rem;" id="circLabelQuiz">0%</div>
+                            <div class="circ-sub">测验正确率</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">📅 学习日历</div>
+                    <div class="calendar-grid">
+                        <div class="cal-header">一</div><div class="cal-header">二</div><div class="cal-header">三</div>
+                        <div class="cal-header">四</div><div class="cal-header">五</div><div class="cal-header">六</div><div class="cal-header">日</div>
+                    </div>
+                    <div class="calendar-grid" id="calGrid"></div>
+                    <div class="cal-legend">
+                        <span>少</span>
+                        <div class="cal-day level-0" style="width:16px;height:16px;cursor:default;"></div>
+                        <div class="cal-day level-2" style="width:16px;height:16px;cursor:default;"></div>
+                        <div class="cal-day level-4" style="width:16px;height:16px;cursor:default;"></div>
+                        <div class="cal-day level-5" style="width:16px;height:16px;cursor:default;"></div>
+                        <span>多</span>
+                    </div>
+                    <button class="add-time-btn" onclick="openLogModal()">➕ 记录今日学习</button>
+                </div>
+            </div>
+
+            <!-- 章节进度 + 周柱状图 -->
+            <div class="overview-row">
+                <div class="panel">
+                    <div class="panel-title">📚 章节完成进度</div>
+                    <div class="chapter-progress-list" id="chapterProgressList"></div>
+                    <div style="margin-top:1rem;display:flex;gap:0.6rem;flex-wrap:wrap;">
+                        <button class="btn-secondary" onclick="markChapter(0)">✅ 章节1完成</button>
+                        <button class="btn-secondary" onclick="markChapter(1)">✅ 章节2完成</button>
+                        <button class="btn-secondary" onclick="markChapter(2)">✅ 章节3完成</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">⏱️ 近7天学习时长</div>
+                    <div class="bar-chart" id="weeklyChart"></div>
+                </div>
+            </div>
+
+            <!-- 测验历史 + 最近活动 -->
+            <div class="overview-row">
+                <div class="panel">
+                    <div class="panel-title">🏆 测验记录</div>
+                    <div class="quiz-history" id="quizHistory">
+                        <div class="empty-state" style="padding:1.5rem;">
+                            <span class="emoji">📝</span>
+                            <p>完成章节测验后记录会显示在这里</p>
+                        </div>
+                    </div>
+                    <button class="add-time-btn" onclick="openQuizModal()">📝 记录测验成绩</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">🕐 最近活动</div>
+                    <div class="activity-list" id="activityList"></div>
+                </div>
+            </div>
+
+            <!-- 技能掌握度 -->
+            <div class="panel" style="margin-bottom:2rem;">
+                <div class="panel-title">🧠 技能掌握度</div>
+                <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+                    <button class="btn-secondary" onclick="addSkill('Python编程',10)">Python +10%</button>
+                    <button class="btn-secondary" onclick="addSkill('Prompt工程',10)">Prompt +10%</button>
+                    <button class="btn-secondary" onclick="addSkill('API调用',10)">API +10%</button>
+                    <button class="btn-secondary" onclick="addSkill('Agent开发',10)">Agent +10%</button>
+                </div>
+                <div class="skill-grid" id="skillGrid"></div>
+            </div>
+
+            <!-- 成就徽章 -->
+            <div class="panel">
+                <div class="panel-title">🏅 成就徽章</div>
+                <div class="badge-grid" id="badgeGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 目标模态框 -->
+    <div class="modal-overlay" id="goalModal">
+        <div class="modal">
+            <h3>🎯 设置学习目标</h3>
+            <p>设定目标，追踪你的学习进度！</p>
+            <div class="goal-form">
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">每周学习天数（1-7）</label>
+                    <input class="goal-input" id="goalDays" type="number" min="1" max="7" value="5">
+                </div>
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">总目标时长（小时）</label>
+                    <input class="goal-input" id="goalHours" type="number" min="1" max="1000" value="100">
+                </div>
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">开始日期</label>
+                    <input class="goal-input" id="goalStartDate" type="date">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-close" onclick="closeGoalModal()">取消</button>
+                <button class="btn-primary" onclick="saveGoal()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 记录学习模态框 -->
+    <div class="modal-overlay" id="logModal">
+        <div class="modal">
+            <h3>⏱️ 记录今日学习</h3>
+            <p>选择日期和今日学习时长</p>
+            <div class="goal-form">
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">学习日期</label>
+                    <input class="goal-input" id="logDate" type="date">
+                </div>
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">学习时长（小时）</label>
+                    <div class="goal-input-group">
+                        <button class="btn-secondary" onclick="addHours(-0.5)" style="padding:0.7rem;">-0.5h</button>
+                        <input class="goal-input" id="logHours" type="number" step="0.5" min="0" max="12" value="1" style="text-align:center;">
+                        <button class="btn-secondary" onclick="addHours(0.5)" style="padding:0.7rem;">+0.5h</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-close" onclick="closeLogModal()">取消</button>
+                <button class="btn-primary" onclick="saveLog()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 记录测验模态框 -->
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal">
+            <h3>📝 记录测验成绩</h3>
+            <p>记录你的章节测验得分</p>
+            <div class="goal-form">
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">章节</label>
+                    <select class="goal-input" id="quizChapter" style="color:white;">
+                        <option value="Python基础">🐍 Python基础</option>
+                        <option value="AI基本概念">🤖 AI基本概念</option>
+                        <option value="LLM API调用">🔗 LLM API调用</option>
+                        <option value="Agent核心原理">⚙️ Agent核心原理</option>
+                        <option value="Agent框架实战">🛠️ Agent框架实战</option>
+                        <option value="项目实战">🚀 项目实战</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="color:#94a3b8;font-size:0.82rem;display:block;margin-bottom:0.4rem;">正确题数 / 总题数</label>
+                    <div class="goal-input-group">
+                        <input class="goal-input" id="quizCorrect" type="number" min="0" max="50" value="10" style="text-align:center;">
+                        <span style="color:#94a3b8;line-height:42px;">/</span>
+                        <input class="goal-input" id="quizTotal" type="number" min="1" max="50" value="15" style="text-align:center;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-close" onclick="closeQuizModal()">取消</button>
+                <button class="btn-primary" onclick="saveQuiz()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="roadmap.html">学习路线</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    var d;
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        render();
+        document.getElementById('goalStartDate').value = d.startDate;
+        document.getElementById('goalDays').value = d.goalDaysPerWeek;
+        document.getElementById('goalHours').value = d.goalHours;
+    });
+
+    function getDefaultData() {
+        return {
+            startDate: new Date().toISOString().split('T')[0],
+            goalHours: 100,
+            goalDaysPerWeek: 5,
+            chapters: [
+                { name: 'Python基础', icon: '🐍', done: false, barClass: 'bar-purple' },
+                { name: 'AI基本概念', icon: '🤖', done: false, barClass: 'bar-green' },
+                { name: 'LLM API调用', icon: '🔗', done: false, barClass: 'bar-orange' },
+                { name: 'Agent核心原理', icon: '⚙️', done: false, barClass: 'bar-blue' },
+                { name: 'Agent框架实战', icon: '🛠️', done: false, barClass: 'bar-purple' },
+                { name: '项目实战', icon: '🚀', done: false, barClass: 'bar-green' },
+            ],
+            skills: [
+                { name: 'Python编程', pct: 0, color: '#6c63ff' },
+                { name: 'Prompt工程', pct: 0, color: '#a855f7' },
+                { name: 'API调用', pct: 0, color: '#10b981' },
+                { name: 'Agent开发', pct: 0, color: '#f59e0b' },
+                { name: '框架使用', pct: 0, color: '#3b82f6' },
+                { name: '项目实战', pct: 0, color: '#ef4444' },
+            ],
+            quizScores: [],
+            activities: [],
+            dailyMinutes: {},
+        };
+    }
+
+    function loadData() {
+        var raw = localStorage.getItem('ai_learning_stats');
+        if (!raw) { d = getDefaultData(); saveData(); }
+        else { d = JSON.parse(raw); }
+        window._d = d;
+    }
+
+    function saveData() {
+        localStorage.setItem('ai_learning
