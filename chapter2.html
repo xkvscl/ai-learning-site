@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二章：AI基本概念 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chapter-header { background: linear-gradient(135deg, #4caf50, #81c784); color: white; padding: 3rem 2rem; text-align: center; }
+        .chapter-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .chapter-header .chapter-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; opacity: 0.9; }
+        .concept-diagram { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 2rem; text-align: center; margin: 2rem 0; }
+        .concept-flow { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .concept-box { background: white; color: #333; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; min-width: 100px; }
+        .concept-arrow { font-size: 1.5rem; opacity: 0.8; }
+        .chapter-content { padding: 4rem 0; }
+        .chapter-content .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .chapter-section { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .chapter-section h2 { color: #4caf50; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+        .chapter-section h3 { color: #444; font-size: 1.1rem; margin: 1.5rem 0 0.8rem; }
+        .chapter-section p { color: #555; line-height: 1.8; margin-bottom: 1rem; }
+        .code-block { background: #1e1e2e; color: #cdd6f4; padding: 1.2rem 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.88rem; overflow-x: auto; margin: 1rem 0; line-height: 1.7; white-space: pre; }
+        .highlight { background: #fff8e1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin: 1.5rem 0; }
+        .highlight strong { color: #e65100; }
+        .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .tip-box strong { color: #2e7d32; }
+        .model-compare { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .model-compare th { background: #4caf50; color: white; padding: 0.8rem; text-align: left; }
+        .model-compare td { padding: 0.7rem; border-bottom: 1px solid #eee; }
+        .model-compare tr:hover { background: #f5fff5; }
+        .nav-bottom { display: flex; justify-content: space-between; padding: 2rem 0; gap: 1rem; }
+        .nav-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn.prev { background: #f0f0f0; color: #444; }
+        .nav-btn.next { background: #4caf50; color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="chapter-header">
+        <h1>🤖 第二章：AI 基本概念</h1>
+        <p>理解人工智能的核心原理，为 Agent 开发打好理论基础</p>
+        <div class="chapter-meta">
+            <span>⏱ 预计学习时间：1周</span>
+            <span>📊 难度：入门</span>
+        </div>
+    </div>
+
+    <section class="chapter-content">
+        <div class="container">
+
+            <!-- 什么是AI -->
+            <div class="chapter-section">
+                <h2>🧠 什么是人工智能？</h2>
+                <p><strong>人工智能（AI）</strong>是指让机器具有类似人类智能的能力，包括学习、推理、理解语言、识别图像等。简单来说，就是让电脑学会"思考"。</p>
+
+                <div class="concept-diagram">
+                    <p style="margin-bottom:1rem;font-size:1.1rem;">🤖 AI 的能力边界</p>
+                    <div class="concept-flow">
+                        <div class="concept-box">📝 理解语言</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">📊 分析数据</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">💡 推理判断</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">🗣️ 生成内容</div>
+                    </div>
+                </div>
+
+                <h3>AI 的发展历程</h3>
+                <table class="model-compare">
+                    <tr><th>阶段</th><th>时间</th><th>代表技术</th></tr>
+                    <tr><td>规则AI</td><td>1950-1990</td><td>专家系统、手动编写规则</td></tr>
+                    <tr><td>机器学习</td><td>1990-2010</td><td>SVM、决策树、随机森林</td></tr>
+                    <tr><td>深度学习</td><td>2010-2020</td><td>CNN、RNN、Transformer</td></tr>
+                    <tr><td>大语言模型</td><td>2020-至今</td><td>GPT、Claude、Llama</td></tr>
+                </table>
+            </div>
+
+            <!-- 什么是大语言模型 -->
+            <div class="chapter-section">
+                <h2>🔤 什么是大语言模型（LLM）？</h2>
+                <p><strong>大语言模型（Large Language Model）</strong>是经过海量文本数据训练的人工智能模型，能够理解和生成人类语言。GPT、Claude、Gemini 都是 LLM。</p>
+
+                <div class="highlight">
+                    <strong>🔑 核心原理：</strong>LLM 的本质是"文本预测机器"。它学习了互联网上几乎所有文字，学会了根据前文预测下一个词该写什么。输入一段文字，它预测下一段应该是什么。
+                </div>
+
+                <h3>Token — 模型的"词汇单位"</h3>
+                <p>模型不像我们一样按"字"或"词"处理文本，而是按 <strong>Token</strong> 处理：</p>
+                <table class="model-compare">
+                    <tr><th>语言</th><th>Token 估算</th><th>说明</th></tr>
+                    <tr><td>英文</td><td>约4个字符 ≈ 1个Token</td><td>简单单词可能1个Token</td></tr>
+                    <tr><td>中文</td><td>约1-2个汉字 ≈ 1个Token</td><td>每个字约1-2个Token</td></tr>
+                    <tr><td>代码</td><td>依赖具体内容</td><td>可能比英文更紧凑</td></tr>
+                </table>
+                <p>所以 GPT-4 的 128K 上下文窗口，大约能放 <strong>10万字</strong>的中文文章！</p>
+            </div>
+
+            <!-- Transformer -->
+            <div class="chapter-section">
+                <h2>⚡ Transformer 架构 — GPT 的心脏</h2>
+                <p>2017 年 Google 发表的论文《Attention Is All You Need》提出了 <strong>Transformer</strong> 架构，这是现代 AI 的基石。</p>
+
+                <div class="concept-diagram">
+                    <p style="margin-bottom:1rem;">🔄 Transformer 处理流程</p>
+                    <div class="concept-flow">
+                        <div class="concept-box">输入文字</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">分词(Tokenize)</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">嵌入(Embed)</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">注意力机制</div>
+                        <div class="concept-arrow">→</div>
+                        <div class="concept-box">输出文字</div>
+                    </div>
+                </div>
+
+                <h3>注意力机制（Attention）— 理解上下文的关键</h3>
+                <p>Attention 让模型能够"关注"输入中最重要的部分。比如读这句话：</p>
+                <p style="background:#f5f5f5;padding:1rem;border-radius:8px;margin:1rem 0;">
+                    "小明把苹果**吃掉**了，因为这个**苹果**很甜。"
+                </p>
+                <p>第一个"苹果"指的是**水果**，第二个"苹果"是**公司名称**。Attention 机制帮助模型理解这种上下文关系！</p>
+
+                <div class="tip-box"><strong>💡 记住：</strong>Transformer 解决了之前 RNN（循环神经网络）无法处理长文本的问题，是 AI 发展的关键突破！</div>
+            </div>
+
+            <!-- Prompt工程 -->
+            <div class="chapter-section">
+                <h2>💬 Prompt 工程 — 和 AI 高效对话的技巧</h2>
+                <p><strong>Prompt</strong> 就是你发给 AI 的指令。好的 Prompt 能让 AI 输出更准确、更实用的答案。</p>
+
+                <h3>核心原则</h3>
+                <table class="model-compare">
+                    <tr><th>原则</th><th>❌ 差的做法</th><th>✅ 好的做法</th></tr>
+                    <tr><td>明确具体</td><td>"帮我写代码"</td><td>"用 Python 写一个函数，输入列表返回平均值"</td></tr>
+                    <tr><td>指定角色</td><td>"解释一下量子计算"</td><td>"你是一位物理教授，用通俗语言解释量子计算"</td></tr>
+                    <tr><td>给出例子</td><td>"写一首诗"</td><td>"写一首七言绝句，主题是春天，风格仿照《春晓》"</td></tr>
+                    <tr><td>分步骤</td><td>"帮我做数据分析"</td><td>"1. 先分析数据分布；2. 找出异常值；3. 做可视化"</td></tr>
+                </table>
+
+                <h3>常用 Prompt 技巧</h3>
+                <div class="code-block"># 技巧1：Few-shot（给例子）
+prompt = """
+请判断以下评论的情感是正面还是负面。
+
+示例：
+评论："这个产品太差了，完全不能用"
+情感：负面
+
+请判断：
+评论："终于解决了困扰我一周的问题！"
+情感："""
+
+# 技巧2：思维链（Chain of Thought）
+prompt = """
+问题：小明有5个苹果，小红给了他3个，他又吃了2个，还剩几个？
+让我们一步一步思考："""
+
+# 技巧3：指定输出格式
+prompt = "用JSON格式返回：{\"name\": 姓名, \"age\": 年龄, \"city\": 城市}"}</div>
+            </div>
+
+            <!-- 模型参数 -->
+            <div class="chapter-section">
+                <h2>⚙️ 常见模型参数详解</h2>
+
+                <h3>Temperature — 随机性控制</h3>
+                <table class="model-compare">
+                    <tr><th>值</th><th>效果</th><th>适用场景</th></tr>
+                    <tr><td>0.0</td><td>几乎确定性输出，同一个问题答案固定</td><td>精确问答、代码生成</td></tr>
+                    <tr><td>0.3-0.5</td><td>略有变化，保持相关性</td><td>日常对话、总结</td></tr>
+                    <tr><td>0.7-1.0</td><td>高随机性，更多创意</td><td>创意写作、脑暴</td></tr>
+                </table>
+
+                <h3>Top-p / Nucleus Sampling — 采样范围</h3>
+                <p>控制模型从多大范围内选择下一个词。Top-p=0.9 意味着只从概率最高、累计达90%的词中选。</p>
+
+                <h3>Max Tokens — 最大输出长度</h3>
+                <p>限制模型输出的最大 Token 数。设置太小可能截断，设置太大会浪费资源。</p>
+
+                <h3>System Prompt / System Message</h3>
+                <div class="code-block"># System Prompt 设置AI的角色和行为
+messages = [
+    {"role": "system", "content": "你是一位Python编程老师，说话亲切，喜欢用例子解释概念"},
+    {"role": "user", "content": "什么是递归？"}
+]
+# 用户的每条消息都在同一角色下继续</div>
+            </div>
+
+            <!-- AI Agent区别 -->
+            <div class="chapter-section">
+                <h2>🤖 AI Agent 和普通 AI 对话的区别</h2>
+                <p>普通 AI 对话 = <strong>问答</strong>（你问我答）<br>AI Agent = <strong>自主行动</strong>（你给我目标，我自己完成）</p>
+
+                <table class="model-compare">
+                    <tr><th>能力</th><th>普通 AI 对话</th><th>AI Agent</th></tr>
+                    <tr><td>回答问题</td><td>✅ 可以</td><td>✅ 可以</td></tr>
+                    <tr><td>调用工具（搜索/代码）</td><td>❌ 不行</td><td>✅ 可以</td></tr>
+                    <tr><td>多步骤任务</td><td>❌ 一次性回答</td><td>✅ 规划+执行</td></tr>
+                    <tr><td>记忆历史</td><td>有限</td><td>✅ 可持久化记忆</td></tr>
+                    <tr><td>访问互联网</td><td>❌ 不能</td><td>✅ 可以（配合工具）</td></tr>
+                    <tr><td>执行代码</td><td>❌ 不能</td><td>✅ 可以（配合工具）</td></tr>
+                </table>
+
+                <div class="highlight">
+                    <strong>🎯 简单理解：</strong>普通 AI 像一本百科全书，而 AI Agent 像一个能替你工作的助手。百科全书只能告诉你答案，助手能帮你完成任务！
+                </div>
+            </div>
+
+            <!-- 主流模型 -->
+            <div class="chapter-section">
+                <h2>🌐 主流大语言模型对比</h2>
+                <table class="model-compare">
+                    <tr><th>模型</th><th>公司</th><th>特点</th><th>免费额度</th></tr>
+                    <tr><td>GPT-4o</td><td>OpenAI</td><td>全能标杆，能力最强</td><td>有限额度</td></tr>
+                    <tr><td>Claude 3.5</td><td>Anthropic</td><td>长文本强，代码优秀</td><td>免费使用</td></tr>
+                    <tr><td>Gemini 2.0</td><td>Google</td><td>多模态能力强</td><td>免费额度</td></tr>
+                    <tr><td>DeepSeek-V3</td><td>深度求索</td><td>开源免费，性能强</td><td>API免费额度</td></tr>
+                    <tr><td>Qwen 2.5</td><td>阿里</td><td>中文优秀，开源</td><td>免费体验</td></tr>
+                    <tr><td>Llama 3</td><td>Meta</td><td>完全开源，可本地部署</td><td>完全免费</td></tr>
+                </table>
+                <div class="tip-box"><strong>💡 推荐：</strong>学习阶段可以用 <strong>Claude（免费）</strong>、<strong>DeepSeek（API免费）</strong>、<strong>Qwen（免费体验）</strong> 来练手，成本低效果好！</div>
+            </div>
+
+            <!-- 小结 -->
+            <div class="chapter-section">
+                <h2>📝 本章小结</h2>
+                <table class="model-compare">
+                    <tr><th>概念</th><th>一句话理解</th></tr>
+                    <tr><td>人工智能</td><td>让机器具有人类智能的技术</td></tr>
+                    <tr><td>大语言模型（LLM）</td><td>经过海量文本训练，能理解和生成语言的模型</td></tr>
+                    <tr><td>Token</td><td>模型处理文本的基本单位</td></tr>
+                    <tr><td>Transformer</td><td>现代 AI 的核心架构，让模型理解上下文</td></tr>
+                    <tr><td>Prompt 工程</td><td>如何更好地给 AI 下指令</td></tr>
+                    <tr><td>AI Agent</td><td>能自主规划、使用工具、完成任务</td></tr>
+                    <tr><td>Temperature</td><td>控制 AI 回答的随机性</td></tr>
+                </table>
+            </div>
+
+            <!-- 导航 -->
+            <div class="nav-bottom">
+                <a href="chapter1.html" class="nav-btn prev">← 上一章：Python基础</a>
+                <a href="chapter3.html" class="nav-btn next" style="background:#4caf50;">下一章：LLM API 调用 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
