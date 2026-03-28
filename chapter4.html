@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四章：Agent核心原理 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chapter-header { background: linear-gradient(135deg, #1e88e5, #7c4dff); color: white; padding: 3rem 2rem; text-align: center; }
+        .chapter-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .chapter-header .chapter-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; opacity: 0.9; }
+        .chapter-content { padding: 4rem 0; }
+        .chapter-content .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .chapter-section { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .chapter-section h2 { color: #1e88e5; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+        .chapter-section h3 { color: #444; font-size: 1.1rem; margin: 1.5rem 0 0.8rem; }
+        .chapter-section p { color: #555; line-height: 1.8; margin-bottom: 1rem; }
+        .code-block { background: #1e1e2e; color: #cdd6f4; padding: 1.2rem 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.88rem; overflow-x: auto; margin: 1rem 0; line-height: 1.7; white-space: pre; }
+        .highlight { background: #fff8e1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin: 1.5rem 0; }
+        .highlight strong { color: #e65100; }
+        .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .tip-box strong { color: #2e7d32; }
+        .agent-flow { background: #f5f3ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .agent-flow h4 { color: #7c4dff; margin-bottom: 1rem; }
+        .agent-step { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+        .step-icon { font-size: 1.5rem; width: 40px; height: 40px; background: #7c4dff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .step-text { flex: 1; }
+        .step-text strong { color: #333; }
+        .step-text p { margin: 0.3rem 0 0; color: #666; font-size: 0.9rem; }
+        .model-compare { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .model-compare th { background: #1e88e5; color: white; padding: 0.8rem; text-align: left; }
+        .model-compare td { padding: 0.7rem; border-bottom: 1px solid #eee; }
+        .model-compare tr:hover { background: #f5f9ff; }
+        .nav-bottom { display: flex; justify-content: space-between; padding: 2rem 0; gap: 1rem; }
+        .nav-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn.prev { background: #f0f0f0; color: #444; }
+        .nav-btn.next { background: #1e88e5; color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="chapter-header">
+        <h1>⚙️ 第四章：Agent 核心原理</h1>
+        <p>深入理解 AI Agent 的核心机制，掌握 ReAct、工具调用、记忆管理等关键技术</p>
+        <div class="chapter-meta">
+            <span>⏱ 预计学习时间：2周</span>
+            <span>📊 难度：进阶</span>
+        </div>
+    </div>
+
+    <section class="chapter-content">
+        <div class="container">
+
+            <!-- 什么是Agent -->
+            <div class="chapter-section">
+                <h2>🤖 4.1 什么是 AI Agent？</h2>
+                <p><strong>AI Agent（人工智能代理）</strong>是一种能够自主感知环境、制定计划、调用工具并执行任务的智能系统。与普通 AI 对话不同，Agent 能主动做事，而不只是回答问题。</p>
+
+                <div class="agent-flow">
+                    <h4>🔄 Agent 工作循环</h4>
+                    <div class="agent-step">
+                        <div class="step-icon">👁️</div>
+                        <div class="step-text">
+                            <strong>感知（Perceive）</strong>
+                            <p>接收用户输入和外部环境信息（工具返回结果）</p>
+                        </div>
+                    </div>
+                    <div class="agent-step">
+                        <div class="step-icon">💭</div>
+                        <div class="step-text">
+                            <strong>推理（Reason）</strong>
+                            <p>分析任务，决定下一步行动（调用哪个工具）</p>
+                        </div>
+                    </div>
+                    <div class="agent-step">
+                        <div class="step-icon">⚡</div>
+                        <div class="step-text">
+                            <strong>行动（Act）</strong>
+                            <p>调用工具获取结果（搜索、计算、代码执行等）</p>
+                        </div>
+                    </div>
+                    <div class="agent-step">
+                        <div class="step-icon">🔁</div>
+                        <div class="step-text">
+                            <strong>循环</strong>
+                            <p>持续循环直到任务完成</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Agent 与普通 AI 的核心区别</h3>
+                <table class="model-compare">
+                    <tr><th>对比项</th><th>普通 AI（ChatGPT）</th><th>AI Agent</th></tr>
+                    <tr><td>工作模式</td><td>一问一答</td><td>自主规划 + 循环执行</td></tr>
+                    <tr><td>工具调用</td><td>❌ 不能</td><td>✅ 可以（搜索/计算/写代码）</td></tr>
+                    <tr><td>多步骤任务</td><td>❌ 一次性回答</td><td>✅ 分步骤自主完成</td></tr>
+                    <tr><td>访问互联网</td><td>❌ 知识有限</td><td>✅ 可以（配合搜索工具）</td></tr>
+                    <tr><td>执行代码</td><td>❌ 只能展示</td><td>✅ 真实执行</td></tr>
+                    <tr><td>记忆</td><td>仅当前对话</td><td>✅ 可持久化存储</td></tr>
+                </table>
+            </div>
+
+            <!-- ReAct框架 -->
+            <div class="chapter-section">
+                <h2>🧠 4.2 ReAct 框架 — 推理与行动的结合</h2>
+                <p><strong>ReAct = Reasoning（推理）+ Acting（行动）</strong>。这是最经典的 Agent 推理框架，核心思想是：<strong>思考 → 行动 → 观察 → 思考 → ... → 完成</strong></p>
+
+                <div class="code-block"># ReAct 循环的伪代码
+def react_loop(task):
+    observation = ""  # 初始观察（用户输入）
+    
+    for step in range(max_steps):
+        # 1. Thought（思考）：根据当前情况决定做什么
+        thought = llm.think(
+            context=conversation_history,
+            observation=observation,
+            available_tools=tools
+        )
+        
+        # 2. Action（行动）：执行思考决定的动作
+        if thought.action == "search":
+            observation = search(thought.query)
+        elif thought.action == "calculate":
+            observation = calculate(thought.expression)
+        elif thought.action == "finish":
+            return thought.result  # 任务完成
+        
+        # 3. 将思考和结果加入历史，循环</div>
+
+                <h3>ReAct 示例：让 Agent 查天气并回答</h3>
+                <div class="code-block"># 用户问题："北京今天适合出门吗？"
+# Agent 思考过程（可见）：
+
+[Thought] 我需要知道北京的天气情况才能回答。
+         可以调用天气工具获取实时信息。
+[Action] call_tool("get_weather", city="北京")
+[Observation] 北京：温度18°C，多云，空气质量良好
+
+[Thought] 根据天气信息，北京今天天气不错，适宜出门。
+         可以给用户一个完整的建议。
+[Final Answer] 北京今天天气良好（18°C，多云），非常适合出门活动！
+
+# 用户问题："帮我查下 GPT-4 的发布时间"
+[Thought] 这是一个事实性问题，需要搜索最新信息。
+[Action] call_tool("search", query="GPT-4 发布时间")
+[Observation] GPT-4 于 2023 年 3 月 14 日由 OpenAI 发布。
+
+[Thought] 找到了答案，可以直接回复用户。
+[Final Answer] GPT-4 于 2023 年 3 月 14 日发布，距今约 X 年。</div>
+
+                <div class="tip-box"><strong>💡 为什么 ReAct 有效？</strong>ReAct 让 AI 模拟人类的思考过程——先想想该怎么做，再动手，然后根据结果调整下一步。这种"慢思考"比直接回答复杂问题更准确！</div>
+            </div>
+
+            <!-- 工具调用 -->
+            <div class="chapter-section">
+                <h2>🛠️ 4.3 工具调用 — Agent 的超能力</h2>
+                <p>工具是 Agent 与外部世界交互的桥梁。通过调用工具，Agent 可以做普通 AI 完全做不到的事情。</p>
+
+                <h3>常见工具类型</h3>
+                <table class="model-compare">
+                    <tr><th>工具类型</th><th>功能</th><th>示例</th></tr>
+                    <tr><td>🔍 搜索工具</td><td>访问互联网获取最新信息</td><td>Bing Search、Google</td></tr>
+                    <tr><td>💻 代码执行</td><td>运行代码获取计算结果</td><td>Python REOL、Bash</td></tr>
+                    <tr><td>📄 文件操作</td><td>读写本地文件</td><td>Read/Write File</td></tr>
+                    <tr><td>🌐 网页访问</td><td>抓取网页内容</td><td>Browser、Scraper</td></tr>
+                    <tr><td>📧 邮件工具</td><td>发送/读取邮件</td><td>Email Send/Gmail</td></tr>
+                    <tr><td>📊 数据库</td><td>查询/操作数据库</td><td>SQL Query</td></tr>
+                    <tr><td>🔧 自定义工具</td><td>根据需求开发</td><td>任何你能想到的功能</td></tr>
+                </table>
+
+                <h3>Function Calling — 定义自己的工具</h3>
+                <div class="code-block"># 用 OpenAI Function Calling 定义一个"计算器"工具
+import openai, json
+
+tools = [
+    {
+        "name": "calculate",
+        "description": "执行数学计算",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "expression": {
+                    "type": "string",
+                    "description": "数学表达式，如 '2+3*5' 或 '10**2'"
+                }
+            },
+            "required": ["expression"]
+        }
+    },
+    {
+        "name": "get_weather",
+        "description": "查询城市天气",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {"type": "string", "description": "城市名称"}
+            },
+            "required": ["city"]
+        }
+    }
+]
+
+response = openai.ChatCompletion.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "计算 128 * 256，再查下上海天气"}],
+    tools=[{"type": "function", "function": t} for t in tools]
+)
+
+# 解析 AI 返回的工具调用
+for choice in response.choices:
+    msg = choice.message
+    if msg.tool_calls:
+        for tool_call in msg.tool_calls:
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+            print(f"调用工具: {name}, 参数: {args}")</div>
+
+                <div class="highlight">
+                    <strong>🎯 核心思想：</strong>你可以给 Agent 定义任意工具！Agent 会在需要时自动判断该调用哪个工具。工具的定义方式就是描述"工具是做什么的"和"需要什么参数"。
+                </div>
+            </div>
+
+            <!-- 记忆管理 -->
+            <div class="chapter-section">
+                <h2>🧠 4.4 记忆管理 — Agent 的"大脑"</h2>
+                <p>普通 AI 只记得当前对话的历史。Agent 需要更强大的记忆系统，才能在多轮交互中保持连贯。</p>
+
+                <h3>三种记忆类型</h3>
+                <table class="model-compare">
+                    <tr><th>记忆类型</th><th>存储内容</th><th>生命周期</th><th>类比</th></tr>
+                    <tr><td>🟢 短期记忆</td><td>当前对话上下文</td><td>单次会话</td><td>工作记忆</td></tr>
+                    <tr><td>🟡 长期记忆</td><td>重要历史信息</td><td>跨会话持久化</td><td>笔记本/日记</td></tr>
+                    <tr><td>🔴 情景记忆</td><td>经验教训/偏好</td><td>永久</td><td>知识库</td></tr>
+                </table>
+
+                <h3>实现一个简单的记忆系统</h3>
+                <div class="code-block">import json
+from datetime import datetime
+
+class AgentMemory:
+    def __init__(self):
+        self.short_term = []   # 短期：当前会话
+        self.long_term = []    # 长期：以文件形式存储
+    
+    def add(self, role, content, memory_type="short"):
+        """添加记忆"""
+        entry = {
+            "role": role,
+            "content": content,
+            "time": datetime.now().isoformat()
+        }
+        if memory_type == "short":
+            self.short_term.append(entry)
+        else:
+            self.long_term.append(entry)
+            self._save_to_file()
+    
+    def get_context(self, max_turns=10):
+        """获取完整上下文（短期 + 重要的长期）"""
+        recent = self.short_term[-max_turns:]
+        important = [m for m in self.long_term if m.get("important")]
+        return recent + important
+    
+    def summarize_and_store(self):
+        """定期将短期记忆压缩存储到长期"""
+        if len(self.short_term) > 20:
+            summary_prompt = "请总结以下对话的要点：\n" + \
+                "\n".join([f"{m['role']}: {m['content']}" for m in self.short_term])
+            # 调用 LLM 生成摘要
+            summary = "（此处调用LLM生成摘要）"
+            self.add("system", f"对话摘要: {summary}", memory_type="long")
+            self.short_term.clear()
+    
+    def _save_to_file(self):
+        """持久化到本地文件"""
+        with open("memory.json", "w", encoding="utf-8") as f:
+            json.dump(self.long_term, f, ensure_ascii=False, indent=2)
+
+# 使用
+memory = AgentMemory()
+memory.add("user", "我叫小明，是一名Python初学者")
+memory.add("assistant", "好的小明！很高兴认识你，我会记住你的名字。")
+
+context = memory.get_context()
+print(f"当前上下文: {len(context)} 条记忆")</div>
+
+                <div class="tip-box"><strong>💡 RAG（检索增强生成）</strong>是大模型记忆系统的重要技术——把大量知识存入向量数据库，Agent 需要时检索相关记忆再生成回答。第五章会详细讲。</div>
+            </div>
+
+            <!-- Planning -->
+            <div class="chapter-section">
+                <h2>📋 4.5 规划能力 — 制定行动方案</h2>
+                <p>Agent 需要能够把复杂任务拆解为多个子步骤，并按计划执行。</p>
+
+                <h3>任务分解（Task Decomposition）</h3>
+                <div class="code-block"># 简单任务分解
+user_task = "帮我分析 AAPL 股票并给出投资建议"
+
+# Agent 自动拆解为子任务：
+subtasks = [
+    "1. 搜索 AAPL 最新股价和财务数据",
+    "2. 分析近3年营收增长趋势",
+    "3. 对比同行业竞争对手",
+    "4. 综合分析给出投资建议"
+]
+
+# 或者让 AI 自动分解
+decomposition_prompt = f"""
+请将以下任务分解为具体步骤：
+
+任务：{user_task}
+
+请列出步骤，每个步骤：
+- 明确要做什么
+- 可能需要什么工具或信息
+"""
+
+# result = llm.generate(decomposition_prompt)
+# print(result)</div>
+
+                <h3>React 规划模式 vs 一次性规划</h3>
+                <table class="model-compare">
+                    <tr><th>模式</th><th>特点</th><th>适用场景</th></tr>
+                    <tr><td>🔁 React（边做边想）</td><td>每步根据结果调整，灵活</td><td>探索性强、结果不确定的任务</td></tr>
+                    <tr><td>📝 Plan-then-Act（先想后做）</td><td>先制定完整计划，再执行</td><td>目标明确、可预见的任务</td></tr>
+                    <tr><td>🔄 混合模式</td><td>先制定计划，执行中动态调整</td><td>复杂真实项目</td></tr>
+                </table>
+            </div>
+
+            <!-- Multi-Agent -->
+            <div class="chapter-section">
+                <h2>👥 4.6 多 Agent 协作</h2>
+                <p>多个 Agent 各司其职、协作完成复杂任务，比单个 Agent 更强大。</p>
+
+                <h3>单 Agent vs 多 Agent</h3>
+                <div class="highlight">
+                    <strong>单 Agent</strong> = 一个人完成所有工作（厨师 + 服务员 + 收银）<br>
+                    <strong>多 Agent</strong> = 团队分工协作（厨师做菜、服务员上菜、收银结账）
+                </div>
+
+                <h3>多 Agent 协作示例：智能客服系统</h3>
+                <div class="code-block"># 多 Agent 协作架构示例
+agents = {
+    "router": {
+        "role": "路由 Agent",
+        "description": "理解用户问题，判断转给哪个专员",
+        "prompt": "你是客服路由，根据问题类型转接..."},
+    "tech_support": {
+        "role": "技术支持 Agent",
+        "description": "处理技术问题",
+        "prompt": "你是技术支持工程师..."},
+    "sales": {
+        "role": "销售 Agent",
+        "description": "处理购买咨询和报价",
+        "prompt": "你是销售顾问..."},
+    "supervisor": {
+        "role": "监督 Agent",
+        "description": "审核答复质量，确保专业",
+        "prompt": "你是质检员，检查以下回答是否合适..."
+    }
+}
+
+def multi_agent_workflow(user_question):
+    # 1. 路由 Agent 判断问题类型
+    route = router_agent.decide(user_question)
+    
+    # 2. 转给对应的专业 Agent
+    if route == "technical":
+        answer = tech_support_agent.answer(user_question)
+    else:
+        answer = sales_agent.answer(user_question)
+    
+    # 3. 监督 Agent 审核
+    reviewed = supervisor_agent.check(answer)
+    return reviewed</div>
+
+                <div class="tip-box"><strong>💡 知名多 Agent 框架：</strong>微软的 <strong>AutoGen</strong>、<strong>CrewAI</strong> 都是专门做多 Agent 协作的框架，第五章会详细讲解。</div>
+            </div>
+
+            <!-- 评估方法 -->
+            <div class="chapter-section">
+                <h2>📏 4.7 Agent 评估方法</h2>
+                <p>如何衡量一个 Agent 的好坏？以下是常用评估维度。</p>
+
+                <table class="model-compare">
+                    <tr><th>维度</th><th>指标</th><th>说明</th></tr>
+                    <tr><td>🎯 任务完成率</td><td>成功率 / 步骤数</td><td>Agent 能独立完成任务吗？用了多少步？</td></tr>
+                    <tr><td>⏱️ 效率</td><td>Token 消耗 / 执行时间</td><td>用了多少资源？</td></tr>
+                    <tr><td>🔍 准确性</td><td>答案正确率</td><td>调用工具的参数正确吗？结果解读正确吗？</td></tr>
+                    <tr><td>🛡️ 安全性</td><td>有害输出率</td><td>有没有绕过安全限制？</td></tr>
+                    <tr><td>🤝 稳定性</td><td>多次运行一致性</td><td>同样问题，结果稳定吗？</td></tr>
+                    <tr><td>💬 交互体验</td><td>用户满意度</td><td>回答是否有条理、易理解？</td></tr>
+                </table>
+
+                <h3>BenchMark 测试集</h3>
+                <p>业界有标准的测试集来评估 Agent 能力：</p>
+                <div class="code-block"># 常见 Agent 评估 Benchmark
+benchmarks = {
+    "GAIA": "通用 AI 助手评估，测试真实世界任务",
+    "AgentBench": "多维度 Agent 能力评估",
+    "WebArena": "网页操作任务评估",
+    "HotpotQA": "多跳问答（需要多步推理）",
+    "MMLU": "多学科知识评估"
+}
+
+# AgentBench 示例评分
+agent_scores = {
+    "GPT-4-Agent": {"overall": 87, "reasoning": 92, "tool_use": 85},
+    "Claude-Agent": {"overall": 85, "reasoning": 90, "tool_use": 82},
+    "OpenHands":  {"overall": 72, "reasoning": 78, "tool_use": 88},
+}</div>
+            </div>
+
+            <!-- 小结 -->
+            <div class="chapter-section">
+                <h2>📝 本章小结</h2>
+                <table class="model-compare">
+                    <tr><th>概念</th><th>一句话理解</th></tr>
+                    <tr><td>AI Agent</td><td>能自主规划、使用工具、完成任务</td></tr>
+                    <tr><td>ReAct</td><td>思考 → 行动 → 观察 → 循环直到完成</td></tr>
+                    <tr><td>工具调用</td><td>Agent 连接外部世界的桥梁</td></tr>
+                    <tr><td>Function Calling</td><td>标准化定义工具的方式</td></tr>
+                    <tr><td>记忆管理</td><td>短期 + 长期 + 情景三类记忆</td></tr>
+                    <tr><td>任务分解</td><td>把复杂任务拆成简单步骤</td></tr>
+                    <tr><td>多 Agent 协作</td><td>多个 Agent 分工合作完成复杂任务</td></tr>
+                    <tr><td>Agent 评估</td><td>任务完成率、准确性、效率是关键指标</td></tr>
+                </table>
+            </div>
+
+            <!-- 导航 -->
+            <div class="nav-bottom">
+                <a href="chapter3.html" class="nav-btn prev">← 上一章：LLM API 调用</a>
+                <a href="chapter5.html" class="nav-btn next" style="background:#1e88e5;">下一章：Agent 框架实战 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
