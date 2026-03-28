@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习路线 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html" class="active">学习路线</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+                <li><a href="resources.html">学习资源</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>📖 AI Agent 学习路线</h1>
+        <p>从零基础到独立开发 AI Agent，预计学习周期 2-3 个月</p>
+    </div>
+
+    <section class="roadmap">
+        <div class="container">
+
+            <div class="roadmap-item" id="module1">
+                <div class="roadmap-num">01</div>
+                <div class="roadmap-content">
+                    <h2>🐍 Python 基础</h2>
+                    <div class="meta">⏱ 约2周 &nbsp;|&nbsp; <span class="level beginner">入门</span> &nbsp;|&nbsp; 推荐先完成本章再继续</div>
+                    <p style="margin-bottom:1rem;color:#666;">Python 是 AI 开发最主流的语言，学好 Python 是一切的基础。</p>
+                    <ul class="topic-list">
+                        <li>变量与数据类型</li>
+                        <li>条件判断与循环</li>
+                        <li>函数定义与调用</li>
+                        <li>列表、字典、元组</li>
+                        <li>面向对象编程</li>
+                        <li>文件读写操作</li>
+                        <li>常用标准库</li>
+                        <li>pip 包管理</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="quiz.html#python" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;">做章节测验 →</a>
+                        <a href="demo.html#python" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;margin-left:1rem;background:var(--primary);color:white;">看代码演示 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-connector"></div>
+
+            <div class="roadmap-item" id="module2">
+                <div class="roadmap-num">02</div>
+                <div class="roadmap-content">
+                    <h2>🤖 AI 基本概念</h2>
+                    <div class="meta">⏱ 约1周 &nbsp;|&nbsp; <span class="level beginner">入门</span></div>
+                    <p style="margin-bottom:1rem;color:#666;">了解 AI 的基本概念，理解大语言模型的工作原理，学会写好 Prompt。</p>
+                    <ul class="topic-list">
+                        <li>什么是机器学习</li>
+                        <li>什么是大语言模型</li>
+                        <li>Transformer 简介</li>
+                        <li>Prompt 工程基础</li>
+                        <li>Token 与上下文</li>
+                        <li>Temperature 参数</li>
+                        <li>常见 AI 模型对比</li>
+                        <li>AI 的能力与局限</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="quiz.html#ai-concept" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;">做章节测验 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-connector"></div>
+
+            <div class="roadmap-item" id="module3">
+                <div class="roadmap-num">03</div>
+                <div class="roadmap-content">
+                    <h2>🔗 LLM API 调用</h2>
+                    <div class="meta">⏱ 约1周 &nbsp;|&nbsp; <span class="level intermediate">进阶</span></div>
+                    <p style="margin-bottom:1rem;color:#666;">学会用代码调用大语言模型 API，构建你的第一个 AI 对话应用。</p>
+                    <ul class="topic-list">
+                        <li>OpenAI API 入门</li>
+                        <li>API Key 管理</li>
+                        <li>Chat Completion</li>
+                        <li>流式输出 Stream</li>
+                        <li>System/User/Assistant</li>
+                        <li>多轮对话实现</li>
+                        <li>错误处理</li>
+                        <li>费用控制</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="demo.html#llm-api" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;background:var(--primary);color:white;">看代码演示 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-connector"></div>
+
+            <div class="roadmap-item" id="module4">
+                <div class="roadmap-num">04</div>
+                <div class="roadmap-content">
+                    <h2>⚙️ Agent 核心原理</h2>
+                    <div class="meta">⏱ 约2周 &nbsp;|&nbsp; <span class="level intermediate">进阶</span></div>
+                    <p style="margin-bottom:1rem;color:#666;">深入理解 AI Agent 的核心机制，掌握 ReAct、工具调用、记忆管理等关键技术。</p>
+                    <ul class="topic-list">
+                        <li>什么是 AI Agent</li>
+                        <li>ReAct 推理框架</li>
+                        <li>Tool Use 工具调用</li>
+                        <li>Function Calling</li>
+                        <li>Memory 记忆管理</li>
+                        <li>Planning 规划能力</li>
+                        <li>Multi-Agent 协作</li>
+                        <li>Agent 评估方法</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="quiz.html#agent" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;">做章节测验 →</a>
+                        <a href="demo.html#agent" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;margin-left:1rem;background:var(--primary);color:white;">看代码演示 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-connector"></div>
+
+            <div class="roadmap-item" id="module5">
+                <div class="roadmap-num">05</div>
+                <div class="roadmap-content">
+                    <h2>🛠️ Agent 框架实战</h2>
+                    <div class="meta">⏱ 约3周 &nbsp;|&nbsp; <span class="level advanced">高级</span></div>
+                    <p style="margin-bottom:1rem;color:#666;">使用主流 Agent 框架快速构建应用，掌握 LangChain、AutoGen 等工具。</p>
+                    <ul class="topic-list">
+                        <li>LangChain 入门</li>
+                        <li>Chain 链式调用</li>
+                        <li>LangChain Agent</li>
+                        <li>向量数据库 RAG</li>
+                        <li>AutoGen 多智能体</li>
+                        <li>CrewAI 框架</li>
+                        <li>工具集成开发</li>
+                        <li>Agent 调试技巧</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="demo.html#langchain" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;background:var(--primary);color:white;">看代码演示 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="roadmap-connector"></div>
+
+            <div class="roadmap-item" id="module6">
+                <div class="roadmap-num">06</div>
+                <div class="roadmap-content">
+                    <h2>🚀 项目实战</h2>
+                    <div class="meta">⏱ 约2周 &nbsp;|&nbsp; <span class="level advanced">高级</span></div>
+                    <p style="margin-bottom:1rem;color:#666;">综合运用所学知识，完整开发一个 AI Agent 项目并部署上线。</p>
+                    <ul class="topic-list">
+                        <li>项目需求分析</li>
+                        <li>架构设计</li>
+                        <li>开发一个搜索 Agent</li>
+                        <li>开发一个代码 Agent</li>
+                        <li>开发一个数据分析 Agent</li>
+                        <li>API 接口封装</li>
+                        <li>部署到云服务器</li>
+                        <li>项目总结与展示</li>
+                    </ul>
+                    <div style="margin-top:1.2rem;">
+                        <a href="resources.html" class="cta-btn" style="font-size:0.9rem;padding:0.6rem 1.5rem;">查看学习资源 →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <p>本站仅作学习整理用途，如有侵权请联系删除</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
