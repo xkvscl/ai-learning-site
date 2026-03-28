@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三章：LLM API调用 - AI Agent 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chapter-header { background: linear-gradient(135deg, #ff6584, #ff8a65); color: white; padding: 3rem 2rem; text-align: center; }
+        .chapter-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .chapter-header .chapter-meta { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; font-size: 0.9rem; opacity: 0.9; }
+        .chapter-content { padding: 4rem 0; }
+        .chapter-content .container { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .chapter-section { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .chapter-section h2 { color: #ff6584; font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+        .chapter-section h3 { color: #444; font-size: 1.1rem; margin: 1.5rem 0 0.8rem; }
+        .chapter-section p { color: #555; line-height: 1.8; margin-bottom: 1rem; }
+        .code-block { background: #1e1e2e; color: #cdd6f4; padding: 1.2rem 1.5rem; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.88rem; overflow-x: auto; margin: 1rem 0; line-height: 1.7; white-space: pre; }
+        .highlight { background: #fff8e1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107; margin: 1.5rem 0; }
+        .highlight strong { color: #e65100; }
+        .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .tip-box strong { color: #2e7d32; }
+        .warn-box { background: #fff3f3; border-left: 4px solid #f44336; padding: 1rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1rem 0; }
+        .warn-box strong { color: #c62828; }
+        .model-compare { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .model-compare th { background: #ff6584; color: white; padding: 0.8rem; text-align: left; }
+        .model-compare td { padding: 0.7rem; border-bottom: 1px solid #eee; }
+        .model-compare tr:hover { background: #fff5f5; }
+        .nav-bottom { display: flex; justify-content: space-between; padding: 2rem 0; gap: 1rem; }
+        .nav-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; font-size: 0.9rem; }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn.prev { background: #f0f0f0; color: #444; }
+        .nav-btn.next { background: #ff6584; color: white; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🤖 AI Agent 学习</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="roadmap.html">学习路线</a></li>
+                <li><a href="chapter1.html">章节内容</a></li>
+                <li><a href="quiz.html">小测验</a></li>
+                <li><a href="demo.html">代码演示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="chapter-header">
+        <h1>🔗 第三章：LLM API 调用</h1>
+        <p>学会用代码调用大语言模型，构建你的第一个 AI 应用</p>
+        <div class="chapter-meta">
+            <span>⏱ 预计学习时间：1周</span>
+            <span>📊 难度：进阶</span>
+        </div>
+    </div>
+
+    <section class="chapter-content">
+        <div class="container">
+
+            <!-- API Key -->
+            <div class="chapter-section">
+                <h2>🔑 3.1 获取 API Key</h2>
+                <p>API Key 是调用 AI 服务的"通行证"，每个服务都需要先获取自己的 Key。</p>
+
+                <h3>OpenAI API Key 申请</h3>
+                <p>1. 访问 <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a><br>
+                2. 登录/注册账号<br>
+                3. 点击 "Create new secret key"<br>
+                4. 复制并保存 Key（只会显示一次！）</p>
+
+                <h3>Claude API Key 申请（推荐免费用）</h3>
+                <p>1. 访问 <a href="https://console.anthropic.com/settings/developers" target="_blank">console.anthropic.com</a><br>
+                2. 注册账号（有免费额度）<br>
+                3. 在 API Keys 页面创建 Key</p>
+
+                <div class="warn-box"><strong>⚠️ 安全警告：</strong>API Key = 银行卡密码！<br>
+                - 不要写在代码里<br>
+                - 不要提交到 GitHub<br>
+                - 不要分享给任何人<br>
+                - 使用环境变量存储
+                </div>
+
+                <h3>安全存储 API Key（环境变量）</h3>
+                <div class="code-block"># Windows PowerShell 设置临时环境变量
+$env:OPENAI_API_KEY = "sk-xxxxxxx"
+
+# Windows CMD 设置
+set OPENAI_API_KEY=sk-xxxxxxx
+
+# 或创建 .env 文件（需要 python-dotenv）
+# .env 文件内容：
+# OPENAI_API_KEY=sk-xxxxxxx
+# ANTHROPIC_API_KEY=sk-ant-xxxxxxx</div>
+
+                <div class="tip-box"><strong>💡 推荐做法：</strong>使用 <code>python-dotenv</code> 库从 .env 文件读取，这样 .env 不会上传到 GitHub。</div>
+            </div>
+
+            <!-- OpenAI SDK -->
+            <div class="chapter-section">
+                <h2>💬 3.2 OpenAI API 完整指南</h2>
+
+                <h3>安装 SDK</h3>
+                <div class="code-block"># 安装 OpenAI Python SDK
+pip install openai
+
+# 安装 dotenv（用于环境变量管理）
+pip install python-dotenv</div>
+
+                <h3>基础对话调用</h3>
+                <div class="code-block">import openai
+import os
+from dotenv import load_dotenv
+
+# 从 .env 读取 API Key
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# 最简单的对话调用
+response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",      # 指定模型
+    messages=[
+        {"role": "system", "content": "你是一个有帮助的助手"},
+        {"role": "user", "content": "什么是Python？"}
+    ],
+    temperature=0.7            # 随机性（0-1）
+)
+
+# 打印回复
+reply = response.choices[0].message.content
+print(reply)
+
+# 查看 token 用量
+print(f"本次消耗 Token: {response.usage.total_tokens}")</div>
+
+                <h3>流式输出（逐字显示）</h3>
+                <div class="code-block">import openai
+
+response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "用一句话解释什么是AI"}],
+    stream=True  # 开启流式输出
+)
+
+# 逐块接收响应（打字机效果）
+full_reply = ""
+for chunk in response:
+    if chunk.choices[0].delta.content:
+        text = chunk.choices[0].delta.content
+        full_reply += text
+        print(text, end="", flush=True)
+print()</div>
+
+                <h3>function calling（函数调用）</h3>
+                <p>Function Calling 让 AI 能够调用你定义的函数，是 AI Agent 的核心技术！</p>
+                <div class="code-block">import openai
+
+response = openai.ChatCompletion.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "北京今天多少度？"}],
+    functions=[
+        {
+            "name": "get_weather",
+            "description": "查询城市天气",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "description": "城市名称，如北京、上海"
+                    }
+                },
+                "required": ["city"]
+            }
+        }
+    ]
+)
+
+message = response.choices[0].message
+if message.function_call:
+    func_name = message.function_call.name
+    args = message.function_call.arguments
+    print(f"AI想调用函数: {func_name}")
+    print(f"参数: {args}")</div>
+            </div>
+
+            <!-- Claude API -->
+            <div class="chapter-section">
+                <h2>🤖 3.3 Claude API 使用</h2>
+                <p>Claude 是 Anthropic 公司的模型，有免费额度，中文支持好，代码能力出色。</p>
+
+                <div class="code-block"># 安装 Anthropic SDK
+pip install anthropic
+
+import anthropic
+import os
+
+client = anthropic.Anthropic(
+    api_key=os.getenv("ANTHROPIC_API_KEY")
+)
+
+message = client.messages.create(
+    model="claude-3-5-haiku-20241007",  # 便宜快速
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "用一句话介绍自己"}
+    ]
+)
+
+print(message.content[0].text)
+print(f"消耗 Token: {message.usage.input_tokens} in / {message.usage.output_tokens} out")</div>
+            </div>
+
+            <!-- 多轮对话 -->
+            <div class="chapter-section">
+                <h2>💭 3.4 多轮对话与上下文</h2>
+                <p>让 AI 记住对话历史，实现真正的多轮交流。</p>
+
+                <div class="code-block">import openai
+
+# 维护完整对话历史
+messages = [
+    {"role": "system", "content": "你是一个Python编程助教"}]
+
+def ask(user_message):
+    """发送消息并获取回复"""
+    messages.append({"role": "user", "content": user_message})
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=messages
+    )
+    
+    reply = response.choices[0].message.content
+    messages.append({"role": "assistant", "content": reply})
+    return reply
+
+# 对话轮次 1
+print("用户: Python中列表和元组有什么区别？")
+print("AI:", ask("Python中列表和元组有什么区别？"))
+
+# 对话轮次 2（AI记住了之前的上下文）
+print("\n用户: 那字典呢？")
+print("AI:", ask("那字典呢？"))  # AI知道你在问Python的数据结构
+
+# 查看完整历史
+print("\n=== 对话历史 ===")
+for msg in messages:
+    print(f"[{msg['role']}]: {msg['content'][:50]}...")</div>
+
+                <div class="highlight">
+                    <strong>⚠️ 上下文长度限制：</strong>每个模型有最大 Token 数限制（上下文窗口）。超过会截断旧消息。GPT-4o 有 128K tokens，约10万汉字，一般够用。Claude 3.5 Sonnet 有 200K tokens，更长。
+                </div>
+            </div>
+
+            <!-- 错误处理 -->
+            <div class="chapter-section">
+                <h2>🛡️ 3.5 错误处理与稳定性</h2>
+                <p>调用 API 可能遇到网络问题、额度用尽等错误，良好的错误处理让程序更稳定。</p>
+
+                <div class="code-block">import openai
+import time
+
+def chat_with_retry(prompt, max_retries=3):
+    """带重试机制的对话函数"""
+    for attempt in range(max_retries):
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.choices[0].message.content
+        
+        except openai.error.RateLimitError:
+            # 触发了速率限制，等待后重试
+            wait_time = 2 ** attempt  # 指数退避
+            print(f"触发限流，等待 {wait_time} 秒...")
+            time.sleep(wait_time)
+        
+        except openai.error.APIError as e:
+            # API错误，可能服务器端问题
+            print(f"API错误: {e}")
+            time.sleep(5)
+        
+        except openai.error.AuthenticationError:
+            # API Key无效
+            print("错误：API Key 无效！请检查配置")
+            break
+    
+    return "抱歉，服务暂时不可用，请稍后再试。"
+
+# 使用
+result = chat_with_retry("你好")
+print(result)</div>
+
+                <h3>常见 API 错误及解决方案</h3>
+                <table class="model-compare">
+                    <tr><th>错误类型</th><th>原因</th><th>解决方法</th></tr>
+                    <tr><td>RateLimitError</td><td>请求过快</td><td>加延迟/减少并发</td></tr>
+                    <tr><td>AuthenticationError</td><td>Key无效/过期</td><td>检查/重新获取API Key</td></tr>
+                    <tr><td>InvalidRequestError</td><td>参数错误</td><td>检查model/messages格式</td></tr>
+                    <tr><td>APIConnectionError</td><td>网络问题</td><td>检查网络/加代理</td></tr>
+                    <tr><td>timeout</td><td>请求超时</td><td>增加timeout参数</td></tr>
+                </table>
+            </div>
+
+            <!-- 成本控制 -->
+            <div class="chapter-section">
+                <h2>💰 3.6 API 成本控制</h2>
+                <p>AI API 按 Token 计费，学会控制成本很重要。</p>
+
+                <table class="model-compare">
+                    <tr><th>模型</th><th>输入价格（每百万Token）</th><th>输出价格</th></tr>
+                    <tr><td>GPT-4o</td><td>约 $2.5</td><td>约 $10</td></tr>
+                    <tr><td>GPT-4o-mini</td><td>约 $0.15</td><td>约 $0.60</td></tr>
+                    <tr><td>Claude 3.5 Sonnet</td><td>约 $3</td><td>约 $15</td></tr>
+                    <tr><td>Claude 3.5 Haiku</td><td>约 $0.25</td><td>约 $1.25</td></tr>
+                    <tr><td>DeepSeek-V3</td><td>约 $0.07</td><td>约 $0.27</td></tr>
+                </table>
+
+                <h3>成本优化技巧</h3>
+                <div class="code-block"># 1. 使用更小更快的模型
+# 简单任务用 mini 模型，省钱90%
+response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",  # 比 gpt-4o 便宜50倍！
+    messages=[{"role": "user", "content": "1+1等于几"}]
+)
+
+# 2. 控制输出长度
+response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "总结这篇文章"}],
+    max_tokens=100  # 限制最大输出100 tokens
+)
+
+# 3. 只传必要的历史消息（节省输入token）
+def trim_history(messages, max_turns=10):
+    """只保留最近N轮对话"""
+    return messages[:1] + messages[-max_turns*2:]  # system + 最近N轮
+
+# 4. 使用缓存（Anthropic Claude 支持）
+# 把不变的系统提示缓存起来，省输入token</div>
+
+                <div class="tip-box"><strong>💡 建议：</strong>开发阶段用 <strong>GPT-4o-mini</strong> 或 <strong>Claude Haiku</strong>，等功能稳定后再换大模型。</div>
+            </div>
+
+            <!-- 小结 -->
+            <div class="chapter-section">
+                <h2>📝 本章小结</h2>
+                <table class="model-compare">
+                    <tr><th>知识点</th><th>掌握程度</th><th>实战要点</th></tr>
+                    <tr><td>API Key 获取与安全存储</td><td>✅ 必须掌握</td><td>用环境变量，绝不写在代码里</td></tr>
+                    <tr><td>OpenAI SDK 基本调用</td><td>✅ 必须掌握</td><td>messages 格式最重要</td></tr>
+                    <tr><td>Claude API 使用</td><td>✅ 推荐掌握</td><td>免费额度，代码能力强</td></tr>
+                    <tr><td>流式输出</td><td>✅ 重要</td><td>实现打字机效果</td></tr>
+                    <tr><td>Function Calling</td><td>✅ 非常重要</td><td>Agent 的基础能力</td></tr>
+                    <tr><td>多轮对话历史</td><td>✅ 必须掌握</td><td>append 到 messages</td></tr>
+                    <tr><td>错误处理与重试</td><td>✅ 重要</td><td>RateLimitError 最常见</td></tr>
+                    <tr><td>成本控制</td><td>✅ 重要</td><td>开发用小模型</td></tr>
+                </table>
+            </div>
+
+            <!-- 导航 -->
+            <div class="nav-bottom">
+                <a href="chapter2.html" class="nav-btn prev">← 上一章：AI基本概念</a>
+                <a href="chapter4.html" class="nav-btn next">下一章：Agent核心原理 →</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🤖 AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p>
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="resources.html">资源推荐</a>
+                <a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
