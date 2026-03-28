@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实战项目 - AI Agent 学习网站</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.projects-page{padding:8rem 2rem 4rem}.projects-page .container{max-width:1100px;margin:0 auto}
+.project-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2.5rem;justify-content:center}
+.filter-btn{padding:.45rem 1.2rem;border-radius:50px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#94a3b8;transition:all .25s}
+.filter-btn:hover{border-color:rgba(108,99,255,.5);color:#fff}
+.filter-btn.active{background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;border-color:transparent;box-shadow:0 4px 15px rgba(108,99,255,.4)}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+.project-card{background:rgba(26,26,46,.9);border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;backdrop-filter:blur(10px);transition:all .3s;display:flex;flex-direction:column}
+.project-card:hover{transform:translateY(-5px);border-color:rgba(108,99,255,.4);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.project-thumb{height:150px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.project-difficulty{position:absolute;top:.8rem;right:.8rem;padding:.2rem .6rem;border-radius:50px;font-size:.7rem;font-weight:700;color:#fff}
+.project-body{padding:1.4rem;flex:1;display:flex;flex-direction:column}
+.project-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
+.project-tag{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);color:#8b85ff;padding:.1rem .55rem;border-radius:50px;font-size:.68rem;font-weight:600}
+.project-title{font-size:1.05rem;font-weight:800;color:#fff;margin-bottom:.4rem}
+.project-desc{color:#94a3b8;font-size:.84rem;line-height:1.6;flex:1;margin-bottom:.8rem}
+.project-features{margin-bottom:.8rem}
+.project-features-title{font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem}
+.project-feature-list{display:flex;flex-wrap:wrap;gap:.3rem}
+.project-feature-item{background:rgba(255,255,255,.04);padding:.2rem .6rem;border-radius:6px;font-size:.75rem;color:#94a3b8}
+.project-footer{display:flex;align-items:center;justify-content:space-between;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.06)}
+.project-time{font-size:.75rem;color:#64748b;display:flex;align-items:center;gap:.3rem}
+.project-cta{padding:.45rem 1.1rem;border-radius:50px;background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .25s;text-decoration:none;display:inline-block}
+.project-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,99,255,.4)}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:9999;display:none;overflow-y:auto}
+.modal-overlay.show{display:block}
+.modal{background:rgba(18,18,38,.98);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:2.2rem;max-width:700px;width:calc(100% - 2rem);margin:2rem auto;animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.8rem;gap:1rem}
+.modal-title{font-size:1.3rem;font-weight:900;color:#fff;flex:1}
+.modal-close{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.modal-close:hover{background:rgba(255,255,255,.1);color:#fff}
+.modal-section{margin-bottom:1.8rem}
+.modal-section-title{font-size:.75rem;font-weight:700;color:#6c63ff;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.7rem}
+.modal-section p{color:#94a3b8;font-size:.88rem;line-height:1.8}
+.modal-section pre{background:#0d1117;border:1px solid #21262d;color:#c9d1d9;padding:1.1rem 1.3rem;border-radius:10px;font-size:.8rem;line-height:1.7;overflow-x:auto;font-family:'JetBrains Mono',monospace;margin-top:.7rem;white-space:pre}
+.modal-steps{display:flex;flex-direction:column;gap:.7rem;margin-top:.8rem}
+.modal-step{display:flex;gap:.9rem;align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-text{flex:1;color:#94a3b8;font-size:.86rem;line-height:1.7;padding-top:2px}
+.modal-tech{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+.tech-badge{background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.25);color:#8b85ff;padding:.18rem .65rem;border-radius:50px;font-size:.72rem;font-weight:600}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;padding:.7rem 1.6rem;border-radius:50px;font-size:.88rem;font-weight:600;z-index:99999;box-shadow:0 8px 30px rgba(108,99,255,.4);animation:toastIn .3s ease;pointer-events:none}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<nav class="navbar"><div class="nav-container"><a href="index.html" class="nav-logo">AI Agent 学习</a><ul class="nav-links"><li><a href="index.html">首页</a></li><li><a href="roadmap.html">学习路线</a></li><li><a href="chapter1.html">章节内容</a></li><li><a href="quiz.html">小测验</a></li><li><a href="stats.html">学习数据</a></li></ul></div></nav>
+<div class="projects-page"><div class="container">
+<div class="section-header" style="margin-bottom:1rem;"><div class="section-eyebrow">精选项目</div><div class="section-title">&#x1F680; 实战项目中心</div><div class="section-desc">从简单到复杂，涵盖搜索、对话、数据分析、自动化等多个方向</div></div>
+<div class="project-filters" id="filters">
+<button class="filter-btn active" data-filter="all" onclick="filterProjects('all')">全部 (12)</button>
+<button class="filter-btn" data-filter="easy" onclick="filterProjects('easy')">&#x1F7E2; 入门 (5)</button>
+<button class="filter-btn" data-filter="medium" onclick="filterProjects('medium')">&#x1F7E1; 进阶 (4)</button>
+<button class="filter-btn" data-filter="hard" onclick="filterProjects('hard')">&#x1F534; 高级 (3)</button>
+</div>
+<div class="projects-grid" id="projectsGrid">
+<!-- Cards injected by JS -->
+</div>
+</div></div>
+<div class="modal-overlay" id="projectModal"><div class="modal" id="modalContent"></div></div>
+<footer class="footer"><div class="container"><p>&#x1F916; AI Agent 学习网站 | 内容来源于互联网免费资源，版权归原作者所有</p><div class="footer-links"><a href="index.html">首页</a><a href="roadmap.html">学习路线</a><a href="https://github.com/xkvscl/ai-learning-site" target="_blank">GitHub</a></div></div></footer>
+<script>
+var projects=[
+{tags:["搜索","LangChain","DuckDuckGo"],title:"AI联网搜索助手",difficulty:"easy",diffLabel:"入门",diffColor:"#10b981",duration:"约1周",bg:"linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)",icon:"&#x1F50D;",desc:"构建可联网搜索的AI助手，输入问题自动搜索、总结并回答，支持多源对比。",features:["联网搜索","智能总结","追问扩展"],tech:["Python","LangChain","DuckDuckGo","GPT-4o-mini"],steps:["安装依赖：pip install langchain langchain-community streamlit","初始化ChatOpenAI模型，配置DuckDuckGo搜索工具","使用LangChain Agent串联搜索工具和LLM","使用Streamlit构建美观Web界面","添加搜索历史记录，支持追问扩展","部署到Streamlit Cloud免费托管"],code:"from langchain_openai import ChatOpenAI\nfrom langchain.agents import initialize_agent, load_tools\n\nllm = ChatOpenAI(model=\"gpt-4o-mini\")\ntools = load_tools([\"ddg-search\"], llm=llm)\n\nagent = initialize_agent(\n    tools=tools, llm=llm,\n    agent=\"zero-shot-react-description\", verbose=True\n)\nresult = agent.run(\"2025年诺贝尔物理学奖得主是谁？\")\nprint(result)"},
+{tags:["对话","Streamlit","API"],title:"个人AI对话助手",difficulty:"easy",diffLabel:"入门",diffColor:"#10b981",duration:"约3天",bg:"linear-gradient(135deg,#1a1a2e,#2d1b69,#6c63ff)",icon:"&#x1F4AC;",desc:"基于Streamlit构建美观AI对话界面，支持多轮对话、历史记录、主题切换。",features:["多轮对话","历史记录","打字机效果"],tech:["Python","Streamlit","OpenAI SDK","Session State"],steps:["安装：pip install streamlit openai","创建app.py，初始化Streamlit页面","使用st.session_state保存对话历史","调用OpenAI API发送消息","实现打字机流式输出效果","添加侧边栏：设置API Key、清空历史、切换主题"],code:"import streamlit as st\nfrom openai import OpenAI\n\nst.title(\"AI对话助手\")\n\nif \"messages\" not in st.session_state:\n    st.session_state.messages = []\n\nfor msg in st.session_state.messages:\n    with st.chat_message(msg[\"role\"]):\n        st.markdown(msg[\"content\"])\n\nif prompt := st.chat_input(\"说点什么...\"):\n    st.session_state.messages.append({\"role\":\"user\",\"content\":prompt})\n    client = OpenAI()\n    resp = client.chat.completions.create(model=\"gpt-4o-mini\",messages=st.session_state.messages)\n    reply = resp.choices[0].message.content\n    st.session_state.messages.append({\"role\":\"assistant\",\"content\":reply})"},
+{tags:["代码执行","Python","调试"],title:"AI代码助手",difficulty:"easy",diffLabel:"入门",diffColor:"#10b981",duration:"约1周",bg:"linear-gradient(135deg,#1a1a2e,#1b4332,#10b981)",icon:"&#x1F4BB;",desc:"输入自然语言生成Python代码、自动执行、调试报错、解释代码逻辑。",features:["代码生成","自动执行","错误调试"],tech:["Python","subprocess","LangChain","GPT-4o-mini"],steps:["使用LangChain的Python REPL工具执行代码","定义代码审查Prompt，过滤不安全代码","集成错误捕获和处理逻辑","添加代码格式化输出","支持解释代码和优化建议"],code:"from langchain.tools import tool\nfrom langchain.agents import initialize_agent\nimport subprocess\n\n@tool\ndef execute_python(code: str) -> str:\n    result = subprocess.run(\n        [\"python\", \"-c\", code],\n        capture_output=True, text=True, timeout=10\n    )\n    return result.stdout or result.stderr\n\ntools = [execute_python]\nagent = initialize_agent(tools, llm, agent=\"zero-shot-react-description\", verbose=True)"},
+{tags:["写作","RAG","FAISS"],title:"文章总结与写作助手",difficulty:"easy",diffLabel:"入门",diffColor:"#10b981",duration:"约1周",bg:"linear-gradient(135deg,#1a1a2e,#4a1a1a,#ef4444)",icon:"&#x270D;",desc:"上传文章链接或文本，自动总结要点，根据内容回答问题。",features:["URL摘要","问答系统","要点提炼"],tech:["Python","BeautifulSoup","LangChain","FAISS"],steps:["使用requests+BeautifulSoup抓取网页内容","LangChain DocumentLoaders解析文本","TextSplitter分块处理","FAISS向量数据库存储","RetrievalQA链进行问答"],code:"from langchain_community.document_loaders import UnstructuredURLLoader\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\nfrom langchain_community.vectorstores import FAISS\nfrom langchain_openai import OpenAIEmbeddings\n\nloader = UnstructuredURLLoader(urls=[\"https://example.com/article\"])\ndocs = loader.load()\nsplitter = RecursiveCharacterTextSplitter(chunk_size=500)\nchunks = splitter.split_documents(docs)\nvectorstore = FAISS.from_documents(chunks, OpenAIEmbeddings())"},
+{tags:["爬虫","自动化","正则"],title:"网页内容抓取Agent",difficulty:"easy",diffLabel:"入门",diffColor:"#10b981",duration:"约5天",bg:"linear-gradient(135deg,#1a1a2e,#1a3a1a,#22c55e)",icon:"&#x1F578;",desc:"输入网址，AI Agent自动分析页面结构、抓取目标内容、清洗数据。",features:["URL分析","内容提取","数据清洗"],tech:["Python","requests","BeautifulSoup","LangChain","正则表达式"],steps:["定义URL分析工具获取网页HTML","BeautifulSoup解析DOM结构","AI判断需要提取哪些内容","正则表达式提取目标数据","输出结构化JSON/CSV"],code:"import requests\nfrom bs4 import BeautifulSoup\n\nhtml = requests.get(url).text\nsoup = BeautifulSoup(html, \"html.parser\")\n# AI判断：提取标题、正文、日期等\ntitle = soup.find(\"h1\").text.strip()\nparagraphs = [p.text for p in soup.find_all(\"p\")]"},
+{tags:["数据分析","Pandas","可视化"],title:"智能数据分析Agent",difficulty:"medium",diffLabel:"进阶",diffColor:"#f59e0b",duration:"约2周",bg:"linear-gradient(135deg,#1a1a2e,#1a2a1a,#f59e0b)",icon:"&#x1F4CA;",desc:"上传CSV/Excel文件，自动分析数据、生成图表、撰写分析报告。",features:["数据读取","统计分析","图表生成"],tech:["Python","Pandas","Matplotlib","LangChain","Streamlit"],steps:["Pandas读取CSV/Excel文件","计算描述性统计量（均值、方差、相关性）","Matplotlib生成柱状图、折线图","AI撰写分析报告文字","Streamlit构建完整数据看板"],code:"import pandas as pd\nimport matplotlib.pyplot as plt\n\ndf = pd.read_csv(\"data.csv\")\nstats = df.describe()\n\nplt.figure(figsize=(10,6))\ndf.plot(kind=\"bar\", x=\"name\", y=\"value\")\nplt.savefig(\"chart.png\")\nplt.close()"},
+{tags:["RAG","向量数据库","知识库"],title:"私人知识库问答系统",difficulty:"medium",diffLabel:"进阶",diffColor:"#f59e0b",duration:"约2周",bg:"linear-gradient(135deg,#1a1a2e,#2a1a4a,#a855f7)",icon:"&#x1F4DA;",desc:"上传文档构建本地知识库，基于向量检索让AI精准回答私域知识问题。",features:["多格式文档","向量检索","精准问答"],tech:["LangChain","FAISS","OpenAI Embeddings","Chroma"],steps:["支持PDF/TXT/Markdown文档加载","文本分块（Chunk）处理","OpenAI Embeddings向量化","FAISS/Chroma向量数据库检索","RetrievalQA精准问答"],code:"from langchain_community.document_loaders import PyPDFLoader\nfrom langchain_openai import OpenAIEmbeddings\nfrom langchain_community.vectorstores import Chroma\n\nloader = PyPDFLoader(\"document.pdf\")\npages = loader.load_and_split()\nvectorstore = Chroma.from_documents(pages, OpenAIEmbeddings())"},
+{tags:["邮件","自动化","IMAP"],title:"AI邮件助手",difficulty:"medium",diffLabel:"进阶",diffColor:"#f59e0b",duration:"约2周",bg:"linear-gradient(135deg,#1a1a2e,#2a1a0a,#f97316)",icon:"&#x1F4E7;",desc:"AI Agent自动阅读邮件、理解内容、生成回复、分类归档。",features:["邮件阅读","智能回复","分类归档"],tech:["Python","imaplib","LangChain","Function Calling"],steps:["IMAP连接邮箱，获取未读邮件","AI解析邮件内容，判断意图","生成专业回复草稿","邮件分类（重要/普通/待处理）","发送回复或保存草稿"],code:"import imaplib, email\nfrom langchain_openai import ChatOpenAI\n\nmail = imaplib.IMAP4_SSL(\"imap.gmail.com\")\nmail.login(\"your_email\", \"password\")\nmail.select(\"inbox\")\nstatus, msgs = mail.search(None, \"UNSEEN\")"},
+{tags:["多Agent","AutoGen","协作"],title:"代码审查流水线",difficulty:"medium",diffLabel:"进阶",diffColor:"#f59e0b",duration:"约2周",bg:"linear-gradient(135deg,#1a1a2e,#0a1a2a,#06b6d4)",icon:"&#x1F91D;",desc:"AutoGen多Agent协作：开发者写代码 → 审查员检查 → 测试员验证。",features:["代码生成","质量审查","自动化测试"],tech:["Python","AutoGen","GPT-4","GitHub Actions"],steps:["定义Developer/Reviewer/Tester三个Agent角色","Agent间通过消息传递协作","Reviewer提出代码修改建议","Tester验证代码正确性","输出最终代码+审查报告"],code:"import autogen\n\ndeveloper = autogen.AssistantAgent(name=\"Developer\",\n    llm_config={\"model\":\"gpt-4o-mini\",\"temperature\":0.3})\n\nreviewer = autogen.AssistantAgent(name=\"Reviewer\",\n    system_message=\"你是资深代码审查员，检查代码质量。\")\n\ngroupchat = autogen.GroupChat(\n    agents=[developer, reviewer], messages=[])\nmanager = autogen.GroupChatManager(groupchat=groupchat)"},
+{tags:["Agent","记忆","向量数据库"],title:"有记忆的个人AI助理",difficulty:"hard",diffLabel:"高级",diffColor:"#ef4444",duration:"约3周",bg:"linear-gradient(135deg,#1a1a2e,#2a0a1a,#ec4899)",icon:"&#x1F9E0;",desc:"构建有长期记忆的AI助理，能记住用户偏好、历史对话、重要事件。",features:["短期记忆","长期记忆","偏好学习"],tech:["Python","LangChain","FAISS","Mem0","GPT-4o"],steps:["短期记忆：ConversationBufferMemory","长期记忆：FAISS向量存储重要对话","定期对短期记忆压缩摘要存入长期","偏好提取：分析用户风格和习惯","跨会话持续学习和进化"],code:"from langchain.memory import ConversationBufferMemory\nfrom langchain_openai import ChatOpenAI\nfrom langchain.agents import initialize_agent\n\nmemory = ConversationBufferMemory(memory_key=\"chat_history\")\n\nagent = initialize_agent(\n    tools=tools, llm=llm,\n    agent=\"conversational-react-description\",\n    memory=memory\n)"},
+{tags:["MCP","浏览器","自动化"],title:"AI浏览器自动化助手",difficulty:"hard",diffLabel:"高级",diffColor:"#ef4444",duration:"约3周",bg:"linear-gradient(135deg,#1a1a2e,#0a0a2a,#6366f1)",icon:"&#x1F310;",desc:"让AI直接控制浏览器自动完成订票、填表、抢票等操作。",features:["网页操作","表单填写","自动抢票"],tech:["Python","Playwright","Claude MCP","Agents SDK"],steps:["安装Playwright：pip install playwright","初始化浏览器自动化环境","定义点击/输入/截图等工具","MCP服务器连接AI和浏览器","自然语言指令驱动浏览器操作"],code:"from playwright.sync_api import sync_playwright\n\nwith sync_playwright() as p:\n    browser = p.chromium.launch()\n    page = browser.new_page()\n    page.goto(\"https://example.com/form\")\n    page.fill(\"#name\", \"张三\")\n    page.click(\"button[type=submit]\")\n    browser.close()"},
+{tags:["工具开发","Function Calling","插件"],title:"AI工具集合平台",difficulty:"hard",diffLabel:"高级",diffColor:"#ef4444",duration:"约4周",bg:"linear-gradient(135deg,#1a1a2e,#1a2a1a,#22d3ee)",icon:"&#x1F527;",desc:"构建可扩展的AI Agent工具平台，支持自定义工具注册、插件热插拔。",features:["工具注册","插件系统","工作流编排"],tech:["Python","Function Calling","Plugin System","FastAPI"],steps:["定义统一的工具接口规范","实现工具注册中心（PluginRegistry）","支持JSON配置或代码动态注册","工具执行器+权限控制","可视化编排工作流"],code:"class Tool:\n    def __init__(self, name, func, description):\n        self.name = name\n        self.func = func\n        self.description = description\n\nclass ToolRegistry:\n    def __init__(self):\n        self.tools = {}\n    def register(self, tool):\n        self.tools[tool.name] = tool\n    def get_tools(self):\n        return [t.__dict__ for t in self.tools.values()]"}
+];
+
+function renderCards(filter){
+  var grid=document.getElementById('projectsGrid');
+  var html='';
+  projects.forEach(function(p,i){
+    if(filter==='all'||p.difficulty===filter){
+      var ftags=p.tags.map(function(t){return'<span class="project-tag">'+t+'</span>'}).join('');
+      varffeats=p.features.map(function(f){return'<span class="project-feature-item">'+f+'</span>'}).join('');
+      html+='<div class="project-card" data-diff="'+p.difficulty+'">';
+      html+='<div class="project-thumb" style="background:'+p.bg+';">'+p.icon+'<span class="project-difficulty" style="background:'+p.diffColor+'">'+p.diffLabel+'</span></div>';
+      html+='<div class="project-body">'+ftags?'<div class="project-tags">'+ftags+'</div>':'';
+      html+='<div class="project-title">'+p.title+'</div>';
+      html+='<div class="project-desc">'+p.desc+'</div>';
+      html+='<div class="project-features"><div class="project-features-title">核心功能</div><div class="project-feature-list">'+ffeats+'</div></div>';
+      html+='<div class="project-footer"><span class="project-time">&#x23F1; '+p.duration+'</span><button class="project-cta" onclick="openProject('+i+')">查看详情</button></div>';
+      html+='</div></div>';
+    }
+  });
+  grid.innerHTML=html||'<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#64748b;">暂无符合条件的项目</div>';
+}
+
+function filterProjects(f){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+  event.target.classList.add('active');
+  renderCards(f);
+}
+
+function openProject(i){
+  var p=projects[i];
+  var techHtml=p.tech.map(function(t){return'<span class="tech-badge">'+t+'</span>'}).join('');
+  var stepsHtml=p.steps.map(function(s,idx){return'<div class="modal-step"><span class="step-num">'+(idx+1)+'</span><span class="step-text">'+s+'</span></div>'}).join('');
+  var modal=document.getElementById('modalContent');
+  modal.innerHTML='<div class="modal-header"><div style="display:flex;align-items:center;gap:.8rem;flex:1"><span style="font-size:2.5rem;">'+p.icon+'</span><div><div class="modal-title">'+p.title+'</div><div style="display:flex;gap:.5rem;margin-top:.3rem">'+techHtml+'</div></div></div><button class="modal-close" onclick="closeModal()">&#x2715;</button></div>';
+  modal.innerHTML+='<div class="modal-section"><div class="modal-section-title">&#x1F4CB; 项目简介</div><p>'+p.desc+'</p></div>';
+  modal.innerHTML+='<div class="modal-section"><div class="modal-section-title">&#x1F527; 技术栈</div><div class="modal-tech">'+techHtml+'</div></div>';
+  modal.innerHTML+='<div class="modal-section"><div class="modal-section-title">&#x1F680; 开发步骤</div><div class="modal-steps">'+stepsHtml+'</div></div>';
+  modal.innerHTML+='<div class="modal-section"><div class="modal-section-title">&#x1F4DD; 核心代码</div><pre>'+escapeHtml(p.code)+'</pre></div>';
+  modal.innerHTML+='<div class="modal-section"><div class="modal-section-title">&#x2728; 项目效果</div><p>'+p.desc+'</p></div>';
+  document.getElementById('projectModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+function closeModal(){
+  document.getElementById('projectModal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+document.getElementById('projectModal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeModal();
+});
+
+renderCards('all');
+</script>
+</body></html>
